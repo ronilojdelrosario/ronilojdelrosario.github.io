@@ -1,0 +1,104 @@
+---
+import { Image } from 'astro:assets';
+import PageLayout from '../layouts/PageLayout.astro';
+import BottomLinks from '../components/BlogPostBottomLinks.astro';
+const {frontmatter} = Astro.props;
+
+const options : Intl.DateTimeFormatOptions = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", options);
+---
+<meta charset="utf-8" />
+<PageLayout pageTitle="Blog">
+    <div class="container">
+        <Image src={frontmatter.cover} alt={frontmatter.coverAlt}/>
+        <div class="post-info">
+            <h1><b>{frontmatter.title}</b></h1>
+            <h2><i>{frontmatter.subtitle}</i></h2>
+            <hr>
+            <p>Posted on: {datestr}</p>
+            <hr>
+        </div>
+        <div class="content">
+            <slot/>
+        </div>
+        <BottomLinks/>
+    </div>
+</PageLayout>
+
+<style>
+    .container {
+        color: white;
+        width: 48em;
+        margin: 0 auto;
+		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+    }
+
+    .post-info {
+        padding: 0 0 0.2em;
+    }
+
+    h1{
+        font-size: 32px;
+        margin: 0.5em 0 0.5em;
+        text-align: center;
+    }
+
+    h2{
+        font-size: 24px;
+        margin: 0.2em 0 1em;
+        text-align: center;
+    }
+
+    .post-info p{
+        padding: 0;
+        margin: 0.5em 0 0;
+    }
+
+    .post-info hr{
+        padding: 0;
+        margin: 0.5em 0 0;
+    }
+
+    .content {
+        display:block;
+        line-height: 1.8;
+        font-size: 18px;
+        text-align: justify;
+    }
+
+    .content::after {
+        content: "\a\a\a\a";
+        white-space: pre;
+    }
+
+    img{
+        max-width: 70vw;
+        position: relative;
+        width: auto;
+        height: auto;
+        left: calc(-35vw + 50%);
+        margin: 2em 0 0;
+        border-radius: 5px;
+    }
+
+    @media screen and (max-width: 768px) {
+        .container {
+            width: 95%;
+        }
+
+        h1 {
+            font-size: 24px;
+        }
+        h2 {
+            font-size: 18px;
+        }
+        
+        img{
+            position: relative;
+            max-width: 100%;
+            width: auto;
+            height: auto;
+            left: 0;
+        }
+    }
+</style>

@@ -1,0 +1,64 @@
+<nav>
+    <ul>
+        <li><a href="/"><b>Home</b></a></li>
+        <li><a href="/blog"><b>Blog</b></a></li>
+        <li><a><b>Projects</b></a></li>
+    </ul>
+</nav>
+<style>
+    nav {
+		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+        color: rgb(218,227,243);
+        overflow: hidden;
+        display: inline;
+        position: absolute;
+        width:100%;
+        height: 80px;
+        margin: 1em auto 0;
+        z-index:99;
+    }
+
+    ul {
+        list-style-type: none;
+        margin: 0 auto;
+        padding: 0;
+        position: absolute;
+        right: 1em;
+        display: block;
+        border-radius: 10px;
+        box-shadow: 0 0 4px 4px rgba(0,0,0,0.2);
+        overflow: hidden;
+        background-color: rgb(25,24,29);
+    }
+
+    li {
+        display: block;
+        float: left;
+        padding: 1em 0;
+    }
+
+    ul li a {
+        display: block;
+        padding: 0 1em;
+        text-align: center;
+        font-size: 24px;
+        text-decoration: none;
+        color: unset;
+    }
+
+    ul li:hover {
+        background-color: rgb(45,44,53);
+    }
+    
+	@media screen and (max-width: 768px) {
+        nav{
+            margin: 0.5em auto 0;
+        }
+        ul {
+            position: static;
+            margin-right: auto;
+            margin-left: auto;
+            width: fit-content;
+        }
+    }
+</style>

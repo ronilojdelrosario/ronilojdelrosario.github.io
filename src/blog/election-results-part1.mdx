@@ -1,0 +1,86 @@
+---
+title: 'Fantastic votes data and where to find them'
+subtitle: 'The search for election results data begins...'
+pubDate: 2025-07-18
+description: "This documents my attempt to webscrape the senatorial election results per municipality from the GMA News site"
+author: "rjdelrosario"
+cover: '../assets/post_banners/fantastic_votes.png'
+coverAlt: 'Fantastic votes banner'
+---
+import Blockquote from '../components/Blockquote.astro';
+export const components = {blockquote: Blockquote}
+import BlogPostImage from '../components/BlogPostImage.astro';
+import gma_page from '../assets/post_img/election-gma-page.png';
+import gma_tagaytay from '../assets/post_img/election-gma-tagaytay.png';
+import net_calls from '../assets/post_img/election-network-calls.png';
+import gma_script from '../assets/post_img/election-gma-data-script.png';
+import geoloc from '../assets/post_img/election-geolocation.png';
+import workflow from '../assets/post_img/election-workflow.png';
+
+The 2025 Senation election period came and went. Allies became enemies, and enemies became allies. Frontrunners fell behind, while dark horses found victory. As the dust settled, what lies in its wake is a political landscape forever changed.
+
+To have a clearer view of what happened, I looked at the data, and I discovered that...
+
+Data? What's 'data', Mama?
+
+As I cannot find readily-available data for local-level senate election results, the first thing I visited are the local news sites. After careful consideration of the vibe of each site, my personal mood for that day and my childhood crush on Mel Tiangco, I decided to investigate the GMA News election results portal.
+
+## <u>GMA News Unofficial Tally</u>
+
+<BlogPostImage src={gma_page} alt='GMA News election results page' caption='GMA News election results page'/>
+
+The portal itself is intuitive. You select the region, and if you want to further limit the results geographically, you can select a province, a city/municipality and a barangay. After clicking the "Search" button, you will be brought to a webpage for that particular place. From there, you can judge the election results
+
+The next task is to figure out a way to scrape the data from the site. For this, I looked at the source code of the relevant web pages, as well as the js scripts used to query the data...
+
+... and I gave up.
+
+<BlogPostImage src={gma_script} alt='GMA News page data query js script' caption='Sample election data query script used by the GMA News'/>
+
+The query script is still decipherable. It being minified, however, made it quite a hassle. It made me second guess my choice of website, and I'm starting to remember that I also find Ted Failon cute when I'm younger.
+
+But then, I remembered what my mother always tells me:
+
+> *Before you act, listen.*
+
+The real meaning of the saying suddenly became clear to me.
+
+> *Before you act, listen. Listen to the network requests.*
+
+So I started following my mother's advice.
+
+## <u>Pirating GMA News data</u>
+
+<BlogPostImage src={net_calls} alt='GMA News election results page network requests' caption='Network requests of the GMA News local election results page'/>
+
+Network requests, in this context, are messages sent by the browser/webpage to the website's server/s to ask for the webpage, and the various data/scripts needed for it to function.
+
+One of the network calls is for a file named *geolocation_REGION.json*, which contains a list of "regions". The use of double quote ("") is due to the fact that Overseas Absentee Voting (or OAV) is considered one of those regions. For each region in the list, there is also a corresponding network request for a file with a name pattern of *"geolocation_\<region_name\>.json"*. These files contain the list of provinces, cities/municipalities and barangays within each region.
+
+> Side note: Further locational subgroups in OAV are mapped to the "province, city/municipality, barangay" model of the actual regions in the country. I believe that this is to eliminate the need to treat OAV as an edge case for a lot of these scripts. This, however, leads to funny situations like having "EUROPE" as one of the "provinces". #ColonizedCountriesColonizeCountries
+
+<BlogPostImage src={geoloc} alt='Geolocation json data sample' caption='Geolocation data for Region I'/>
+
+I, then, checked some of the webpages for certain municipalities, and looked at the network requests. For each place, a corresponding *json* file is fetched with a pattern of *"\<formatted region name\>\_\<formatted province name\>\_\<formatted name of city or municipality\>.json"*.
+
+<BlogPostImage src={gma_tagaytay} alt='Sample of GMA News election results page (Tagaytay)' caption='Sample GMA News local election results page (Region IV-A - Cavite - Tagaytay)'/>
+
+Now that I had some idea on the name patterns of the files, the last thing to do is to fetch them.
+
+## <u>Final Fetch Quest</u>
+
+With all of these information, this became my final work flow (which were executed in Python) for fetching the election data:
+
+1. Download *geolocation_REGION.json*
+2. Download corresponding geolocation json for each region
+3. For each region, do the following:
+    - Download the region's election results (in json format)
+    - Download all provincial-level election results
+    - Download all city-level election results
+4. Edit code because surely something will go wrong
+
+<BlogPostImage src={workflow} alt='Workflow diagram' caption='The thing written above but with a little bit more color'/>
+
+This gave me all the election results json data upto city-level, except for 10 "municipalities" wherein my code failed to fetch their corresponding files. At this point, I'm hungry and sleepy so I did not delve too deep into the issue. I checked the web page for a few of those "municipalities" and found that their page also does not show the results. So I just thought "Scopes and Limitations section exists for a reason".
+
+And there you have it. That's the story of how I ~pirated~ obtained an unofficial tally of election results upto the municipal level. The question now is what secrets lie beneath these election results. But that's a task for Future Me.

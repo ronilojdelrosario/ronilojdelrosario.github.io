@@ -1,0 +1,65 @@
+---
+import { Image } from 'astro:assets';
+
+const { src, caption, ...attrs } = Astro.props;
+---
+<div class="container">
+  <Image src={src} {...attrs} class="normal-img"/>
+  <p>{caption}</p>
+</div>
+
+<style>
+  .container {
+    display: block;
+    width: 100%;
+  }
+
+  img {
+    display: block;
+    max-width: 100%;
+    height: auto;
+    border-radius: 0.5rem;
+    padding: 0 auto;
+    margin: 1em auto 0;
+    cursor: zoom-in;
+  }
+
+  img.expanded-img{
+    cursor: zoom-out;
+  }
+
+  .container:has(>img.expanded-img){
+    position: relative;
+    left: calc(-42.5vw + 50%);
+    width: 85vw;
+  }
+
+  p {
+    display: block;
+    text-align: center;
+    width: 90%;
+    padding: 0 auto;
+    margin: 0 auto;
+    font-size: 14px;
+  }
+
+  @media screen and (max-width: 768px) {
+    img {
+      max-width:100%;
+    }
+  }
+</style>
+
+<script>
+  const images = document.getElementsByTagName("img");
+  for (var i=0; i<images.length; i++){
+    images[i].addEventListener("click",function(e){
+      if (this.className==="normal-img"){
+        this.setAttribute("class","expanded-img")
+      }
+      else{
+        this.setAttribute("class","normal-img")
+      }
+    })
+  }
+</script>

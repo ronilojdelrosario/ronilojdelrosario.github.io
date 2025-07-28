@@ -1,0 +1,50 @@
+---
+import { Image } from 'astro:assets';
+const {title,desc,img_src,url} = Astro.props
+---
+
+<div class="card">
+    <div class="container">
+        <Image src={img_src} alt={img_src}/>
+        <a href={url}><h1><b>{title}</b></h1></a>
+        <p>{desc}</p>
+    </div>
+</div>
+
+<style>
+    .card {
+        position: relative;
+        width: 35vw;
+        border-radius: 5px;
+        background-color: rgb(32,31,40);
+		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+    }
+    .container {
+        padding: 2px 16px;
+        color: white;
+    }
+    a {
+        text-decoration: none;
+        color: unset;
+    }
+    h1 {
+        font-size: 20px;
+    }
+    p {
+        font-size: 16px;
+    }
+    img{
+        max-width: 100%;
+        width: auto;
+        height: auto;
+        margin-top: 1em;
+        border-radius: 5px;
+    }
+
+    @media screen and (max-width: 768px) {
+        .card {
+            min-width: 80vw;
+            margin: auto;
+        }
+    }
+</style>

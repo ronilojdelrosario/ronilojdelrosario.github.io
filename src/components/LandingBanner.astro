@@ -1,0 +1,87 @@
+---
+import background_name from '../assets/background_name.svg';
+import fb_logo from '../assets/fb_logo.png';
+import gh_logo from '../assets/gh_logo.svg';
+import ln_logo from '../assets/ln_logo.png';
+---
+<div id="container">
+    <section id="details">
+        <h1>
+            Ronilo del Rosario
+        </h1>
+        <h2>
+            Analyst | GIS | DRR
+        </h2>
+        <a href="https://www.facebook.com/IamRNL/">
+            <img src={fb_logo.src} width=32 height=32 alt=""/>
+        </a>
+        <a href="https://github.com/ronilojdelrosario/">
+            <img src={gh_logo.src} width=32 height=32 alt=""/>
+        </a>
+        <a href="https://www.linkedin.com/in/ronilo-del-rosario-467906229/">
+            <img src={ln_logo.src} width=32 height=32 alt=""/>
+        </a>
+    </section>
+</div>
+
+<style define:vars={{background_src:`url(${background_name.src})`}}>
+	#container {
+		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+        background-image: var(--background_src);
+        background-size: cover;
+        background-clip: content-box;
+        background-position: center center;
+        position: relative;
+        top: 2vh;
+		height: 95vh;
+        width: 98vw;
+        margin: 0 auto;
+	}
+
+	#details {
+		position: absolute;
+        top: 35vh;
+        right: 10rem;
+		padding: 16px;
+        z-index: 1;
+        color: rgb(218,227,243);
+	}
+
+	#details h1 {
+		font-size: 64px;
+		margin-top: 0.25em;
+        margin-bottom: 0;
+	}
+
+    #details h2 {
+        font-size: 32px;
+        margin-top: 0.25em;
+    }
+
+    #details a{
+        padding-right: 1em;
+        text-decoration: none;
+    }
+
+	@media screen and (max-width: 768px) {
+		#container {
+			display: flex;
+			flex-direction: column;
+		}
+
+		#details {
+			display: block;
+            top: 60vh;
+            right: 0;
+            left: 0;
+		}
+
+		#details h1 {
+            font-size: 36px;
+		}
+
+		#details h2 {
+            font-size: 24px;
+		}
+	}
+</style>

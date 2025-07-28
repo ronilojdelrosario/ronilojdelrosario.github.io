@@ -1,0 +1,44 @@
+---
+import background_name from '../assets/background_name.svg';
+import fb_logo from '../assets/fb_logo.png';
+import gh_logo from '../assets/gh_logo.svg';
+import ln_logo from '../assets/ln_logo.png';
+---
+
+<div id="container">
+    <p>Sincerely yours,<br>Ronilo del Rosario</p>
+    <div id="link-container">
+        <a href="https://www.facebook.com/IamRNL/">
+            <img src={fb_logo.src} width=32 height=32 alt=""/>
+        </a>
+        <a href="https://github.com/ronilojdelrosario/">
+            <img src={gh_logo.src} width=32 height=32 alt=""/>
+        </a>
+        <a href="https://www.linkedin.com/in/ronilo-del-rosario-467906229/">
+            <img src={ln_logo.src} width=32 height=32 alt=""/>
+        </a>
+    </div>
+</div>
+
+<style>
+    #container {
+        display: flex;
+        flex-flow: column;
+    }
+    #link-container {
+        display: flex;
+        align-content: center;
+        justify-content: center;
+        padding: 0 0 2em; 
+    }
+    a {
+        margin: 0 1em;
+    }
+    p {
+        display: block;
+        text-align: center;
+        line-height: 1.8;
+        font-size: 18px;
+        margin: 0 0 4px;
+    }
+</style>
