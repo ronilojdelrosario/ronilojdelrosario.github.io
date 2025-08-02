@@ -5,8 +5,10 @@ const {title,desc,img_src,url} = Astro.props
 
 <div class="card">
     <div class="container">
-        <Image src={img_src} alt={img_src}/>
-        <a href={url}><h1><b>{title}</b></h1></a>
+        <a href={url}>
+            <Image src={img_src} alt={img_src}/>
+            <h1><b>{title}</b></h1>
+        </a>
         <p>{desc}</p>
     </div>
 </div>
