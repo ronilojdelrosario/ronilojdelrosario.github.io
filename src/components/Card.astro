@@ -6,7 +6,9 @@ const {title,desc,img_src,url} = Astro.props
 <div class="card">
     <div class="container">
         <a href={url}>
-            <Image src={img_src} alt={img_src}/>
+            <div class="img-container">
+                <Image src={img_src} alt={img_src}/>
+            </div>
             <h1><b>{title}</b></h1>
         </a>
         <p>{desc}</p>
@@ -34,6 +36,11 @@ const {title,desc,img_src,url} = Astro.props
     }
     p {
         font-size: 16px;
+    }
+    .img-container{
+        max-width: 100%;
+        aspect-ratio: 20/10;
+        overflow: hidden;
     }
     img{
         max-width: 100%;

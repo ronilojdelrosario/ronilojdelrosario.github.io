@@ -3,8 +3,13 @@ import background_name from '../assets/background_name.svg';
 import fb_logo from '../assets/fb_logo.png';
 import gh_logo from '../assets/gh_logo.svg';
 import ln_logo from '../assets/ln_logo.png';
+import vctr_pic from '../assets/pic.svg'
 ---
 <div id="container">
+    <section id="picture">
+        <img src={vctr_pic.src} alt=""/>
+    </section>
+
     <section id="details">
         <h1>
             Ronilo del Rosario
@@ -32,34 +37,66 @@ import ln_logo from '../assets/ln_logo.png';
         background-clip: content-box;
         background-position: center center;
         position: relative;
-        top: 2vh;
-		height: 95vh;
-        width: 98vw;
+        box-sizing: border-box;
+        top: 2%;
+		height: 96%;
+        width: 100%;
         margin: 0 auto;
 	}
 
+    #picture {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        box-sizing: border-box;
+        right: 20%;
+        width: 20%;
+        height: 100%;;
+        padding: 0;
+    }
+
+    #picture img {
+        display: block;
+        position: absolute;
+        box-sizing: border-box;
+        background-color: rgb(39,37,47);
+        box-shadow: 0px 0px 3px 1px rgba(120, 120, 120, 0.3);
+        /*border-color: rgb(255,255,255);
+        border-style: solid;
+        border-width: 2px;*/
+        right: 0;
+        border-radius: 30%;
+        width: 100%;
+        aspect-ratio: 1 / 1;
+    }
+
 	#details {
 		position: absolute;
-        top: 35vh;
-        right: 10rem;
+        top: 38%;
+        right: 42%;
+        text-align: right;
 		padding: 16px;
         z-index: 1;
-        color: rgb(218,227,243);
+        color: rgb(255,255,255);
+        text-shadow: -2px 2px 3px rgba(0, 0, 0, 0.3);
 	}
 
 	#details h1 {
 		font-size: 64px;
-		margin-top: 0.25em;
-        margin-bottom: 0;
+        padding: 0;
+        margin: 0 0 0rem;
 	}
 
     #details h2 {
         font-size: 32px;
-        margin-top: 0.25em;
+        padding: 0;
+        margin: 0 0 1rem;
     }
 
     #details a{
-        padding-right: 1em;
+        padding-left: 1rem;
+        margin: 0;
         text-decoration: none;
     }
 
@@ -69,8 +106,26 @@ import ln_logo from '../assets/ln_logo.png';
 			flex-direction: column;
 		}
 
+        #picture{
+            top: 20vh;
+            width: 100%;
+            aspect-ratio: 1 / 1;
+            right: auto;
+            margin: 0;
+        }
+
+        #picture img{
+            width: 70%;
+            top: 0;
+            aspect-ratio: 1 / 1;
+            align-self: center;
+            right:auto;
+            margin: auto;
+        }
+
 		#details {
 			display: block;
+            text-align: left;
             top: 60vh;
             right: 0;
             left: 0;
@@ -82,6 +137,12 @@ import ln_logo from '../assets/ln_logo.png';
 
 		#details h2 {
             font-size: 24px;
+            margin-bottom: 0.5rem;
 		}
+
+        #details a{   
+            padding-left: 0;
+            padding-right: 1rem;
+        }
 	}
 </style>

@@ -10,28 +10,51 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
 <meta charset="utf-8" />
 <PageLayout pageTitle="Blog">
     <div class="container">
-        <Image src={frontmatter.cover} alt={frontmatter.coverAlt}/>
-        <div class="post-info">
-            <h1><b>{frontmatter.title}</b></h1>
-            <h2><i>{frontmatter.subtitle}</i></h2>
-            <hr>
-            <p>Posted on: {datestr}</p>
-            <hr>
+        <div class="banner-container">
+            <Image src={frontmatter.cover} alt={frontmatter.coverAlt}/>
         </div>
-        <div class="content">
-            <slot/>
+        <div class="text-container">
+            <div class="post-info">
+                <h1><b>{frontmatter.title}</b></h1>
+                <h2><i>{frontmatter.subtitle}</i></h2>
+                <hr>
+                <p>Posted on: {datestr}</p>
+                <hr>
+            </div>
+            <div class="content">
+                <slot/>
+            </div>
+            <BottomLinks/>
         </div>
-        <BottomLinks/>
     </div>
 </PageLayout>
 
 <style>
     .container {
+        display: block;
+        position: absolute;
+        width: 100%;
         color: white;
+		font-family: Montserrat, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+    }
+
+    .banner-container{
+        display: block;
+        position: relative;
+        width: 70%;
+        aspect-ratio: 22/10;
+        margin: 1em auto;
+        padding: 0;
+        overflow:hidden;
+    }
+
+    .text-container{
+        display: block;
+        position: relative;
         width: 48em;
         margin: 0 auto;
-		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
     }
+
 
     .post-info {
         padding: 0 0 0.2em;
@@ -63,7 +86,16 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
         display:block;
         line-height: 1.8;
         font-size: 18px;
-        text-align: justify;
+        line-height: 200%;
+        /*text-align: justify;*/
+    }
+
+    .content :global(h2){
+        color: #87CEEB;
+    }
+
+    .content :global(p){
+        margin-bottom: 1em;
     }
 
     .content::after {
@@ -72,18 +104,21 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
     }
 
     img{
-        max-width: 70vw;
-        position: relative;
+        display:block;
+        position: absolute;
+        max-width: 100%;
         width: auto;
         height: auto;
-        left: calc(-35vw + 50%);
-        margin: 2em 0 0;
+        margin: 0;
         border-radius: 5px;
     }
 
     @media screen and (max-width: 768px) {
         .container {
+            position: relative;
             width: 95%;
+            margin: 0 auto;
+            padding: 0;
         }
 
         h1 {
@@ -92,13 +127,14 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
         h2 {
             font-size: 18px;
         }
-        
-        img{
-            position: relative;
-            max-width: 100%;
-            width: auto;
-            height: auto;
-            left: 0;
+        .text-container{
+            width: 100%;
+        }
+        .content {
+            line-height:150%;
+        }
+        .banner-container {
+            width: 100%;
         }
     }
 </style>
