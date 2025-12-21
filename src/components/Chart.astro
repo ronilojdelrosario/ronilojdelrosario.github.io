@@ -1,0 +1,69 @@
+---
+const { width = "100%", height = "", options = {} } = Astro.props;
+
+// Generate a unique ID for this chart instance
+const chartId = `echart-${Math.random().toString(36).substring(2, 11)}`;
+
+// Default chart options if none provided
+const defaultOptions = {
+  title: {
+    text: "ECharts Example"
+  },
+  tooltip: {},
+  xAxis: {
+    data: ["A", "B", "C", "D", "E"]
+  },
+  yAxis: {},
+  series: [
+    {
+      name: "Sales",
+      type: "bar",
+      data: [5, 20, 36, 10, 10]
+    }
+  ]
+};
+
+// Merge provided options with defaults
+const chartOptions = Object.keys(options).length > 0 ? options : defaultOptions;
+const serializedOptions = JSON.stringify(chartOptions);
+---
+
+<div id={chartId} style={`width: ${width}; height: ${height==""?'auto':height}; aspect-ratio: ${height==""?'1 / 1':'auto'};`}></div>
+
+<script define:vars={{ chartOptions: serializedOptions, chartId }}>
+  // Load ECharts from CDN
+  document.addEventListener("DOMContentLoaded", async () => {
+    // Load ECharts core
+    const echarts = await import("https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.esm.min.js");
+
+    // Initialize chart
+    const chartContainer = document.getElementById(chartId);
+    const chart = echarts.init(chartContainer);
+
+    // Set chart options
+    var options = JSON.parse(chartOptions);
+    if (window.innerWidth<=768){
+      console.log("Hey");
+      let indexSize = options["visualMap"].findIndex((element)=>element.type=='continuous');
+      if (indexSize != -1){
+        options["visualMap"][indexSize].inRange.symbolSize = [10,24];
+      }
+    }
+    chart.setOption(options);
+
+    // Handle resize
+    window.addEventListener("resize", () => {
+      chart.resize();
+    });
+  });
+</script>
+
+<style>
+  @media screen and (max-width: 768px) {
+    div {
+      height: 100px;
+      width: 100px;
+      aspect-ratio: 1 / 1;
+    }
+  }
+</style>

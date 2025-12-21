@@ -1,0 +1,93 @@
+---
+import Chart from './Chart.astro';
+
+const {width = "100%", height = "", data, columns, x_col, y_col, colorCat = "", colorCatList=[], shapeCat = "", shapeCatList=[], sizeCat="", tooltip_cols = []} = Astro.props;
+
+const dataset = {
+        dimensions: columns,
+        source: data
+    };
+// ECharts dark color theme
+const colorList = ["#dd6b66","#759aa0","#e69d87","#8dc1a9","#ea7e53","#eedd78","#73a373","#73b9bc", "#7289ab", "#91ca8c", "#f49f42"];
+const shapeList = ['circle', 'triangle', 'rect', 'diamond', 'pin', 'roundRect', 'arrow'];
+
+var visualMap = [];
+
+if (colorCat!= "" && colorCatList.length>0){
+    var visualMapC = {
+        type: 'piecewise',
+        dimension: colorCat,
+        categories: colorCatList,
+        inRange: {
+            color : colorList.slice(colorCatList.length)
+        },
+        left: '10%',
+        textStyle : {color: "white"}
+    };
+    visualMap.push(visualMapC);
+}
+
+if (shapeCat!= "" && shapeCatList.length>0){
+    var visualMapS = {
+        type: 'piecewise',
+        dimension: shapeCat,
+        categories: shapeCatList,
+        inRange: {
+            symbol : ['circle', 'triangle']//shapeList.slice(shapeCatList.length)
+        },
+        left: '80%',
+        textStyle : {color: "white"}
+    };
+    visualMap.push(visualMapS);
+}
+
+if (sizeCat!=""){
+    const indSizeCat = columns.indexOf(sizeCat);
+    const sizes = data.map((x)=>x[indSizeCat]);
+    var visualMapSi = {
+        type: 'continuous',
+        dimension: sizeCat,
+        min: Math.min(...sizes),
+        max: Math.max(...sizes),
+        inRange: {
+            symbolSize: [Math.min(...sizes),Math.max(...sizes)]
+        },
+        left: "center",
+        itemWidth: 0
+    };
+    visualMap.push(visualMapSi);
+}
+
+const xmin = Math.min(...data.map((x)=>x[columns.indexOf(x_col)]));
+const xmax = Math.max(...data.map((x)=>x[columns.indexOf(x_col)]));
+const xdatamin = ((xmax<1&&Math.abs(xmax-xmin)>2*xmin)||(Math.abs(xmax-xmin)>5*xmin))&&(xmin>0)?0:xmin;
+
+const ymin = Math.min(...data.map((x)=>x[columns.indexOf(y_col)]));
+const ymax = Math.max(...data.map((x)=>x[columns.indexOf(y_col)]));
+const ydatamin = ((ymax<1&&Math.abs(ymax-ymin)>2*ymin)||(Math.abs(ymax-ymin)>5*ymin))&&(ymin>0)?0:ymin;
+
+
+const option = {
+    legend: {},
+    tooltip: {},
+    grid: {left:'8%',right:'1%',top:10},
+    dataset: dataset,
+    visualMap: visualMap,
+    xAxis : {name:x_col.charAt(0).toUpperCase() + x_col.slice(1), nameLocation:'center', nameGap: 30, nameTextStyle:{color:'white',fontSize:16}, min: xdatamin
+    },
+    yAxis : {name:y_col.charAt(0).toUpperCase() + y_col.slice(1), nameLocation:'center', nameGap: 30, nameTextStyle:{color:'white',fontSize:16}, min: ydatamin
+    },
+    series: [
+        {
+            type : 'scatter',
+            encode : {
+                x : x_col,
+                y : y_col,
+                tooltip : tooltip_cols.length>0?tooltip_cols:[x_col,y_col]
+            }
+        }
+    ]
+};
+---
+
+<Chart width={width} height={height} options={option}>

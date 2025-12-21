@@ -34,7 +34,7 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
         display: block;
         position: absolute;
         width: 100%;
-        color: white;
+        color: rgba(255,255,255,0.87);
 		font-family: Montserrat, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
     }
 
@@ -96,6 +96,10 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
 
     .content :global(p){
         margin-bottom: 1em;
+    }
+
+    .content :global(a){
+        color: #87CEEB;
     }
 
     .content::after {
