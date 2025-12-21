@@ -43,10 +43,9 @@ const serializedOptions = JSON.stringify(chartOptions);
     // Set chart options
     var options = JSON.parse(chartOptions);
     if (window.innerWidth<=768){
-      console.log("Hey");
       let indexSize = options["visualMap"].findIndex((element)=>element.type=='continuous');
       if (indexSize != -1){
-        options["visualMap"][indexSize].inRange.symbolSize = [10,24];
+        options.visualMap[indexSize].inRange.symbolSize = [10,24];
       }
     }
     chart.setOption(options);
