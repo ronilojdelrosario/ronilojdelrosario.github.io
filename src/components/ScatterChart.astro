@@ -69,7 +69,7 @@ const ydatamin = ((ymax<1&&Math.abs(ymax-ymin)>2*ymin)||(Math.abs(ymax-ymin)>5*y
 
 const option = {
     legend: {},
-    tooltip: {},
+    tooltip: {confine:true},
     grid: {left:45,right:'1%',top:10},
     dataset: dataset,
     visualMap: visualMap,
