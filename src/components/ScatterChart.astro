@@ -8,7 +8,7 @@ const dataset = {
         source: data
     };
 // ECharts dark color theme
-const colorList = ["#dd6b66","#759aa0","#e69d87","#8dc1a9","#ea7e53","#eedd78","#73a373","#73b9bc", "#7289ab", "#91ca8c", "#f49f42"];
+const colorList = ["#e69d87","#8dc1a9","#dd6b66","#759aa0","#ea7e53","#eedd78","#73a373","#73b9bc", "#7289ab", "#91ca8c", "#f49f42"];
 const shapeList = ['circle', 'triangle', 'rect', 'diamond', 'pin', 'roundRect', 'arrow'];
 
 var visualMap = [];
@@ -19,9 +19,10 @@ if (colorCat!= "" && colorCatList.length>0){
         dimension: colorCat,
         categories: colorCatList,
         inRange: {
-            color : colorList.slice(colorCatList.length)
+            color : colorList.slice(0,colorCatList.length)
         },
         left: '10%',
+        textGap: 5,
         textStyle : {color: "white"}
     };
     visualMap.push(visualMapC);
@@ -35,7 +36,8 @@ if (shapeCat!= "" && shapeCatList.length>0){
         inRange: {
             symbol : ['circle', 'triangle']//shapeList.slice(shapeCatList.length)
         },
-        left: '80%',
+        right: '1%',
+        textGap: 5,
         textStyle : {color: "white"}
     };
     visualMap.push(visualMapS);
@@ -52,8 +54,7 @@ if (sizeCat!=""){
         inRange: {
             symbolSize: [Math.min(...sizes),Math.max(...sizes)]
         },
-        left: "center",
-        itemWidth: 0
+        show:false
     };
     visualMap.push(visualMapSi);
 }
@@ -66,16 +67,17 @@ const ymin = Math.min(...data.map((x)=>x[columns.indexOf(y_col)]));
 const ymax = Math.max(...data.map((x)=>x[columns.indexOf(y_col)]));
 const ydatamin = ((ymax<1&&Math.abs(ymax-ymin)>2*ymin)||(Math.abs(ymax-ymin)>5*ymin))&&(ymin>0)?0:ymin;
 
+const tooltip_fin = tooltip_cols.length>0?tooltip_cols:[x_col,y_col]
 
 const option = {
     legend: {},
-    tooltip: {confine:true},
+    tooltip: {confine:true,indices:tooltip_fin.map((x)=>columns.findIndex((y)=>x==y))},
     grid: {left:45,right:'1%',top:10},
     dataset: dataset,
     visualMap: visualMap,
-    xAxis : {name:x_col.charAt(0).toUpperCase() + x_col.slice(1), nameLocation:'center', nameGap: 30, nameTextStyle:{color:'white',fontSize:16}, min: xdatamin
+    xAxis : {name:x_col.charAt(0).toUpperCase() + x_col.slice(1), nameLocation:'center', nameTextStyle:{color:'white',fontSize:16}, min: xdatamin, axisLabel:{color:'white'}, axisLine:{lineStyle:{color:'white'}}
     },
-    yAxis : {name:y_col.charAt(0).toUpperCase() + y_col.slice(1), nameLocation:'center', nameGap: 30, nameTextStyle:{color:'white',fontSize:16}, min: ydatamin
+    yAxis : {name:y_col.charAt(0).toUpperCase() + y_col.slice(1), nameLocation:'center', nameTextStyle:{color:'white',fontSize:16}, min: ydatamin, axisLabel:{color:'white'}, axisLine:{lineStyle:{color:'white'}}
     },
     series: [
         {
@@ -83,7 +85,7 @@ const option = {
             encode : {
                 x : x_col,
                 y : y_col,
-                tooltip : tooltip_cols.length>0?tooltip_cols:[x_col,y_col]
+                tooltip : tooltip_fin
             }
         }
     ]

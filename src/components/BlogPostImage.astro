@@ -1,11 +1,11 @@
 ---
 import { Image } from 'astro:assets';
 
-const { src, caption, ...attrs } = Astro.props;
+const { src, caption="", ...attrs } = Astro.props;
 ---
 <div class="container">
   <Image src={src} {...attrs} class="normal-img"/>
-  <p>{caption}</p>
+  {caption!=""?<p>{caption}</p>:null}
 </div>
 
 <style>

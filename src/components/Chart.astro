@@ -23,18 +23,21 @@ const defaultOptions = {
   ]
 };
 
+const height_fin = height==""?'auto':height;
+const aspect_ratio = height==""?'1 / 1':'auto'
+
 // Merge provided options with defaults
 const chartOptions = Object.keys(options).length > 0 ? options : defaultOptions;
 const serializedOptions = JSON.stringify(chartOptions);
 ---
 
-<div id={chartId} style={`width: ${width}; height: ${height==""?'auto':height}; aspect-ratio: ${height==""?'1 / 1':'auto'};`}></div>
+<div id={chartId}></div>
 
 <script define:vars={{ chartOptions: serializedOptions, chartId }}>
   // Load ECharts from CDN
   document.addEventListener("DOMContentLoaded", async () => {
     // Load ECharts core
-    const echarts = await import("https://cdn.jsdelivr.net/npm/echarts@5/dist/echarts.esm.min.js");
+    const echarts = await import("https://cdnjs.cloudflare.com/ajax/libs/echarts/6.0.0/echarts.esm.min.js");
 
     // Initialize chart
     const chartContainer = document.getElementById(chartId);
@@ -45,9 +48,20 @@ const serializedOptions = JSON.stringify(chartOptions);
     if (window.innerWidth<=768){
       let indexSize = options["visualMap"].findIndex((element)=>element.type=='continuous');
       if (indexSize != -1){
-        options.visualMap[indexSize].inRange.symbolSize = [10,24];
+        let symbolSize = options.visualMap[indexSize].inRange.symbolSize;
+        options.visualMap[indexSize].inRange.symbolSize = [8,symbolSize[1]*8/symbolSize[0]];
       }
+      let indexSizePW = options["visualMap"].findIndex((element)=>element.type=='continuous')
     }
+    if (options.tooltip.indices!=null){
+      const tooltipInds = options.tooltip.indices;
+      console.log(tooltipInds);
+      console.log(tooltipInds.map((x)=>`${options.dataset.dimensions[x]}`).join("<br/>"));
+      options.tooltip.formatter = params =>{
+        return `${params.marker}<br/>`+tooltipInds.map((x)=>`<b>${params.dimensionNames[x]}</b>: ${params.value[x]}`).join("<br/>")
+      };
+    }
+    options.tooltip.extraCssText = 'text-wrap: wrap;'
     chart.setOption(options);
 
     // Handle resize
@@ -57,11 +71,15 @@ const serializedOptions = JSON.stringify(chartOptions);
   });
 </script>
 
-<style>
+<style define:vars={{width, height_fin, aspect_ratio}}>
+  div {
+    width: width;
+    height: var(--height_fin);
+    aspect-ratio: var(--aspect_ratio);
+  }
   @media screen and (max-width: 768px) {
     div {
-      height: 100px;
-      width: 100px;
+      height: auto;
       aspect-ratio: 1 / 1;
       overflow: hidden;
     }
