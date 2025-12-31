@@ -1,3 +1,7 @@
+---
+import background_name from '../assets/background_name.svg';
+const {pageTitle} = Astro.props;
+---
 <nav>
     <ul>
         <li><a href="/"><b>Home</b></a></li>
@@ -5,61 +9,80 @@
         <li><a><b>Projects</b></a></li>
     </ul>
 </nav>
-<style>
+
+<style define:vars={{background_src:`url(${background_name.src})`}}>
     nav {
 		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+        background-image: var(--background_src);
+        background-size: cover;
+        background-position: 0% 34%;
+        position: relative;
+        display: block;
+		height: 50px;
+        width: 100%;
         color: rgb(218,227,243);
-        overflow: hidden;
-        position: absolute;
-        top: 0;
-        width:100%;
-        height: 50px;
-        margin: 0.5em auto 0;
+        background-color:rgb(39,37,47);
     }
 
     ul {
+        list-style-type: none;
+        box-sizing: border-box;
+        height: 100%;
+        margin: auto;
+        padding: 0;
         position: absolute;
         right: 1em;
         display: block;
         overflow: hidden;
-        list-style-type: none;
-        height: 100%;
-        margin: auto;
-        padding: 0;
     }
 
     li {
+        box-sizing: border-box;
         height: 100%;
         display: block;
         float: left;
+        padding: 0.6em 0;
     }
 
     a {
         display: flex;
         justify-content: center;
         align-items: center;
+        padding: 0;
         min-width: 5em;
         margin: auto 0;
         height: 100%;
+        text-align: center;
         font-size: 24px;
         text-decoration: none;
-        color: unset;
         text-shadow: -2px 2px 3px rgba(0, 0, 0, 0.3);
+        color: unset;
+    }
+
+    b {
+        display: inline-block;
     }
 
     a:hover {
         text-shadow: -2px 2px 5px rgba(0, 0, 0, 1);
     }
-    
-	@media screen and (max-width: 768px) {
-        nav{
+
+    @media screen and (max-width: 768px) {
+        nav {
+            height:40px;
             margin: 0.5em auto 0;
         }
         ul {
+            display: flex;
             position: static;
             margin-right: auto;
             margin-left: auto;
             width: fit-content;
+        }
+        li {
+            flex-basis: 0;
+            flex-grow: 1;
+            min-width: 0;
         }
     }
 </style>

@@ -10,23 +10,25 @@ import vctr_pic from '../assets/pic_alt.svg'
         <img src={vctr_pic.src} alt=""/>
     </section>
 
-    <section id="details">
-        <h1>
-            Ronilo del Rosario
-        </h1>
-        <h2>
-            Analyst | GIS | DRR
-        </h2>
-        <a href="https://www.facebook.com/IamRNL/">
-            <img src={fb_logo.src} width=32 height=32 alt=""/>
-        </a>
-        <a href="https://github.com/ronilojdelrosario/">
-            <img src={gh_logo.src} width=32 height=32 alt=""/>
-        </a>
-        <a href="https://www.linkedin.com/in/ronilo-del-rosario/">
-            <img src={ln_logo.src} width=32 height=32 alt=""/>
-        </a>
-    </section>
+    <div id="details-container">
+        <section id="details">
+            <h1>
+                Ronilo del Rosario
+            </h1>
+            <h2>
+                Analyst | GIS | DRR
+            </h2>
+            <a href="https://www.facebook.com/IamRNL/">
+                <img src={fb_logo.src} width=32 height=32 alt=""/>
+            </a>
+            <a href="https://github.com/ronilojdelrosario/">
+                <img src={gh_logo.src} width=32 height=32 alt=""/>
+            </a>
+            <a href="https://www.linkedin.com/in/ronilo-del-rosario/">
+                <img src={ln_logo.src} width=32 height=32 alt=""/>
+            </a>
+        </section>
+    </div>
 </div>
 
 <style define:vars={{background_src:`url(${background_name.src})`}}>
@@ -37,7 +39,6 @@ import vctr_pic from '../assets/pic_alt.svg'
         background-clip: content-box;
         background-position: center center;
         position: relative;
-        box-sizing: border-box;
         top: 2%;
 		height: 96%;
         width: 100%;
@@ -49,9 +50,8 @@ import vctr_pic from '../assets/pic_alt.svg'
         align-items: center;
         justify-content: center;
         position: absolute;
-        box-sizing: border-box;
-        right: 20%;
-        width: 20%;
+        right: 0;
+        width: 40%;
         height: 100%;;
         padding: 0;
     }
@@ -59,22 +59,30 @@ import vctr_pic from '../assets/pic_alt.svg'
     #picture img {
         display: block;
         position: absolute;
-        box-sizing: border-box;
         background-color: rgb(39,37,47);
         box-shadow: 0px 0px 4px 3px rgba(120, 120, 120, 0.3);
         border-color: rgb(255,255,255);
         border-style: solid;
         border-width: 2px;
-        right: 0;
+        left: 0;
         border-radius: 30%;
         width: 100%;
+        max-width: 310px;
         aspect-ratio: 1 / 1;
+    }
+
+    #details-container {
+        position: absolute;
+        right: 42%;
+        width: 58%;
+        height: 100%;
+        display: flex;
+        align-items: center;
     }
 
 	#details {
 		position: absolute;
-        top: 38%;
-        right: 42%;
+        right: 0;
         text-align: right;
 		padding: 16px;
         z-index: 1;
@@ -108,7 +116,7 @@ import vctr_pic from '../assets/pic_alt.svg'
 
         #picture{
             position: relative;
-            top: 20vh;
+            top: 21%;
             width: 100%;
             height: auto;
             aspect-ratio: 1 / 1;
@@ -117,14 +125,18 @@ import vctr_pic from '../assets/pic_alt.svg'
         }
 
         #picture img{
-            box-sizing: border-box;
             width: 70%;
             top: 0;
             aspect-ratio: 1 / 1;
             height: auto;
             align-self: center;
-            right:auto;
+            left:auto;
             margin: auto;
+        }
+
+        #details-container {
+            right:0;
+            width:100%;
         }
 
 		#details {

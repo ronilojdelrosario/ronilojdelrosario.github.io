@@ -1,7 +1,3 @@
----
-import NavBar from '../components/NavBar.astro';
----
-
 <!doctype html>
 <html lang="en">
 	<head>
@@ -12,17 +8,20 @@ import NavBar from '../components/NavBar.astro';
 		<title>Ronilo Del Rosario</title>
 	</head>
 	<body>
-		<NavBar />
 		<slot />
 	</body>
 </html>
 
-<style>
+<style is:global>
 	html,
 	body {
 		margin: 0;
 		width: 100%;
 		height: 100%;
 		background-color:rgb(39,37,47);
+	}
+
+	* {
+		box-sizing: border-box;
 	}
 </style>

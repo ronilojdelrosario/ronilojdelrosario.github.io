@@ -16,9 +16,9 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
         <div class="text-container">
             <div class="post-info">
                 <h1><b>{frontmatter.title}</b></h1>
-                <h2><i>{frontmatter.subtitle}</i></h2>
+                <h2>{frontmatter.subtitle}</h2>
                 <hr>
-                <p>Posted on: {datestr}</p>
+                <p>{datestr}</p>
                 <hr>
             </div>
             <div class="content">
@@ -34,24 +34,24 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
         display: block;
         position: absolute;
         width: 100%;
-        color: rgba(255,255,255,0.87);
+        color: rgba(255,255,255,0.85);
 		font-family: Montserrat, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
     }
 
     .banner-container{
         display: block;
         position: relative;
-        width: 70%;
+        width: 48em;
         aspect-ratio: 22/10;
         margin: 1em auto;
         padding: 0;
-        overflow:hidden;
+        overflow: hidden;
     }
 
     .text-container{
         display: block;
         position: relative;
-        width: 48em;
+        width: 46em;
         margin: 0 auto;
     }
 
@@ -60,42 +60,43 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
         padding: 0 0 0.2em;
     }
 
+    h1, h2, .post-info {
+        text-align: center;
+    }
+
     h1{
         font-size: 32px;
         margin: 0.5em 0 0.5em;
-        text-align: center;
+        color: #DFDF00;
+        line-height: 1.2;
     }
 
     h2{
         font-size: 24px;
         margin: 0.2em 0 1em;
-        text-align: center;
+        line-height: 1.2;
     }
 
-    .post-info p{
-        padding: 0;
-        margin: 0.5em 0 0;
-    }
-
-    .post-info hr{
+    .post-info p, hr{
         padding: 0;
         margin: 0.5em 0 0;
     }
 
     .content {
         display:block;
-        line-height: 1.8;
         font-size: 18px;
-        line-height: 200%;
-        /*text-align: justify;*/
     }
 
     .content :global(h2){
         color: #87CEEB;
+        margin-top: 2em;
+        margin-bottom: 1em;
     }
 
     .content :global(p){
         margin-bottom: 1em;
+        line-height: 2.5;
+        margin-bottom: 1.2em;
     }
 
     .content :global(a){
@@ -120,7 +121,7 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
     @media screen and (max-width: 768px) {
         .container {
             position: relative;
-            width: 95%;
+            width: 90%;
             margin: 0 auto;
             padding: 0;
         }
@@ -135,7 +136,7 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
             width: 100%;
         }
         .content {
-            line-height:150%;
+            line-height:1.5;
         }
         .banner-container {
             width: 100%;

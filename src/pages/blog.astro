@@ -13,10 +13,6 @@ const sortedPublishedBlogEntries = publishedBlogEntries.sort((a,b) =>{
 
 <PageLayout pageTitle="Blog">
     <div id="container">
-        <!-- 
-        {cardlist.map((item)=>(
-            <Card title={item.title} desc={item.desc}/>
-        ))} -->
         {
             sortedPublishedBlogEntries.map((post)=>(
                 <Card title={post.data.title} desc={post.data.description} url={`/posts/${post.id}/`} img_src={post.data.cover}/>
