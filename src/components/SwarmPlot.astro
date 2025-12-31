@@ -1,0 +1,93 @@
+---
+import Chart from './Chart.astro';
+
+const {width = "100%", height = "700px", data, columns, x_col, y_col, x_vals = [], colorCat="", sizeCat="", tooltip_cols=[]} = Astro.props;
+
+var datafin = [];
+
+if (x_vals.length>0){
+    datafin = data.filter((x)=>x_vals.includes(x[columns.indexOf(x_col)]));
+}
+else{datafin=data}
+
+
+const x_cats = x_vals.length>0?x_vals:[...new Set(datafin.map((x)=>x[columns.indexOf(x_col)]))];
+
+const dataset = {
+        dimensions: columns,
+        source: datafin
+    };
+    
+const colorList = ["#dd6b66","#759aa0","#e69d87","#8dc1a9","#ea7e53","#eedd78","#73a373","#73b9bc", "#7289ab", "#91ca8c", "#f49f42", "#fc97af", "#87f7cf", "#f7f494", "#72ccff", "#f7c5a0", "#d4a4eb", "#d2f5a6", "#76f2f2", "#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de", "#3ba272", "#fc8452", "#9a60b4", "#ea7ccc"];
+
+var visualMap = [];
+
+if (colorCat!= ""){
+    let colorCatList = [...new Set(datafin.map((x)=>x[columns.indexOf(colorCat)]))].sort();
+    var visualMapC = {
+        type: 'piecewise',
+        dimension: colorCat,
+        categories: colorCatList,
+        inRange: {
+            color : colorList.slice(0,colorCatList.length)
+        },
+        outOfRange: {
+            color: 'grey',
+            opacity: 0.3,
+        },
+        right: '1%',
+        padding:0,
+        top: '1%',
+        orient: 'vertical',
+        textStyle : {color: "white", fontSize:8},
+        selectedMode:'multiple',
+        itemWidth:12,
+        itemHeight:12,
+        itemGap:2,
+        textGap:5
+    };
+    visualMap.push(visualMapC);
+}
+
+if (sizeCat!=""){
+    const indSizeCat = columns.indexOf(sizeCat);
+    const sizes = datafin.map((x)=>x[indSizeCat]);
+    var visualMapSi = {
+        type: 'continuous',
+        dimension: sizeCat,
+        min: Math.min(...sizes),
+        max: Math.max(...sizes),
+        inRange: {
+            symbolSize: [3000/datafin.length,5000/datafin.length]
+        },
+        show:false
+    };
+    visualMap.push(visualMapSi);
+}
+
+const tooltip_fin = tooltip_cols.length>0?tooltip_cols:[x_col,y_col]
+
+const option = {
+    legend: {},
+    tooltip: {confine:true,indices:tooltip_fin.map((x)=>columns.findIndex((y)=>x==y))},
+    grid: {left:0,right:'15%',top:24},
+    dataset: dataset,
+    visualMap: visualMap,
+    xAxis : {type: 'category', data:x_cats,
+        jitter:50000/datafin.length, jitterOverlap:false, jitterMargin:datafin.length>100?0:2,
+        axisLine: {lineStyle: { color:'white'} }, axisLabel: {interval: 0,rotate: 45,align:'right',color:'white'}, nameTextStyle:{color:'white',fontSize:16}},
+    yAxis : { type: 'value', nameLocation:'middle', nameGap: 0, axisLabel:{color:'white',padding:0},nameTextStyle:{color:'white',fontSize:16, padding:0},axisLine:{lineStyle:{color:'white'}}},
+    series: [
+        {
+            type : 'scatter',
+            encode : {
+                x : x_col,
+                y : y_col,
+                tooltip : tooltip_fin
+            }
+        }
+    ]
+};
+---
+
+<Chart width={width} height={height} options={option}></Chart>

@@ -1,0 +1,40 @@
+---
+const {StickyVisual, ...attrs} = Astro.props;
+
+---
+
+<div class="container-block">
+    <div class="sticky-visual">
+        <StickyVisual {...attrs}/>
+    </div>
+    <div class="nonsticky">
+        <slot/>
+    </div>
+</div>
+
+<style>
+    .sticky {
+        position: sticky;
+        top: 0;
+        background-color: rgb(39,37,47);
+    }
+</style>
+
+<script>
+const targetElement = document.getElementsByClassName("sticky-visual")[0];
+
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting && entry.intersectionRatio==1) {
+      entry.target.classList.add("sticky");
+    } else if(!entry.isIntersecting) {
+      entry.target.classList.remove("sticky");
+    }
+  });
+}, {
+  root: null,
+  threshold: [0,1]
+});
+
+observer.observe(targetElement);
+</script>
