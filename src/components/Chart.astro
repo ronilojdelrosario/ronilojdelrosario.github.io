@@ -1,5 +1,5 @@
 ---
-const { width = "100%", height = "", options = {} } = Astro.props;
+const { width = "100%", height = "", mobile_aspect_ratio = "1 / 1", options = {} } = Astro.props;
 
 // Generate a unique ID for this chart instance
 const chartId = `echart-${Math.random().toString(36).substring(2, 11)}`;
@@ -24,7 +24,8 @@ const defaultOptions = {
 };
 
 const height_fin = height==""?'auto':height;
-const aspect_ratio = height==""?'1 / 1':'auto'
+const aspect_ratio = height==""?'1 / 1':'auto';
+const mobile_height = (mobile_aspect_ratio=="auto")&&(height!="")?height:"auto";
 
 // Merge provided options with defaults
 const chartOptions = Object.keys(options).length > 0 ? options : defaultOptions;
@@ -51,12 +52,13 @@ const serializedOptions = JSON.stringify(chartOptions);
         let symbolSize = options.visualMap[indexSize].inRange.symbolSize;
         options.visualMap[indexSize].inRange.symbolSize = [8,symbolSize[1]*8/symbolSize[0]];
       }
-      let indexSizePW = options["visualMap"].findIndex((element)=>element.type=='continuous')
+      let indexSizePW = options["visualMap"].findIndex((element)=>element.type=='continuous');
+      // TBC
+      options.yAxis.axisLabel.width = 100;
+      options.yAxis.axisLabel.overflow = 'truncate';
     }
     if (options.tooltip.indices!=null){
       const tooltipInds = options.tooltip.indices;
-      console.log(tooltipInds);
-      console.log(tooltipInds.map((x)=>`${options.dataset.dimensions[x]}`).join("<br/>"));
       options.tooltip.formatter = params =>{
         return `${params.marker}<br/>`+tooltipInds.map((x)=>`<b>${params.dimensionNames[x]}</b>: ${params.value[x]}`).join("<br/>")
       };
@@ -71,17 +73,19 @@ const serializedOptions = JSON.stringify(chartOptions);
   });
 </script>
 
-<style define:vars={{width, height_fin, aspect_ratio}}>
+<style define:vars={{width, height_fin, aspect_ratio, mobile_aspect_ratio, mobile_height}}>
   div {
-    width: width;
+    width: var(--width);
     height: var(--height_fin);
     aspect-ratio: var(--aspect_ratio);
+    margin-bottom: 2em;
   }
   @media screen and (max-width: 768px) {
     div {
-      height: auto;
-      aspect-ratio: 1 / 1;
+      height: var(--mobile_height);
+      aspect-ratio: var(--mobile_aspect_ratio);
       overflow: hidden;
+      margin-bottom: 0;
     }
   }
 </style>

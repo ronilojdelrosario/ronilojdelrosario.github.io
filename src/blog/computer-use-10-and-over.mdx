@@ -1,0 +1,216 @@
+---
+title: 'Kaka-Computer Mo Yan!'
+subtitle: 'Meandering Discussion of the NICTHS data on Computer Use By Filipinos Aged 10 Years and Over'
+pubDate: 2026-01-08
+description: "Analysis of the computer use of Filipinos by region, age group, sex, highest grade completed, and computer-related activities"
+author: "rjdelrosario"
+cover: '../assets/post_banners/computer.png'
+coverAlt: 'Computer Use Filipinos'
+draft: false
+---
+import BlogPostImage from '../components/BlogPostImage.astro';
+import ScatterChart from '../components/ScatterChart.astro';
+import BarChart from '../components/BarChart.astro';
+import Table from '../components/Table.astro';
+import bardata from '../assets/post_data/table1.json'
+import compUse_Luz from '../assets/post_data/compUse_Luz.json'
+import compUse_Vis from '../assets/post_data/compUse_Vis.json'
+import compUse_Min from '../assets/post_data/compUse_Min.json'
+import compUse_gender from '../assets/post_data/compUse_gender.json'
+import compUse_genderDevi from '../assets/post_data/compUse_genderDevi.json'
+import compUse_age from '../assets/post_data/compUse_age.json'
+import compUse_ageDevi from '../assets/post_data/compUse_ageDevi.json'
+import compUse_grade from '../assets/post_data/compUse_grade.json'
+import compUse_gradeDevi from '../assets/post_data/compUse_gradeDevi.json'
+import compUse_act1 from '../assets/post_data/compUse_activity1.json'
+import compUse_act2 from '../assets/post_data/compUse_activity2.json'
+
+If you would ask me what's the defining feature of our generation, I would say it's the continuous integration of computer in our daily lives. In my own experience, it started with video games. Rental PCs used to be popular, where games like DOTA and Battle Realms could be played. Then, the use of Microsoft Office was increasingly required for school. College came, and with it were other more specialized programs. Programming became a necessity for other courses. This continued until our professional lives, and is still continuing until now.
+
+It does not even stop with academics or work. Various stores became online. Some government processes can now be done through the internet. Even dating and other social interactions were increasingly done through web apps.
+
+While in this nostalgic mood, I found this [article](https://psa.gov.ph/content/laptop-computer-was-most-commonly-used-filipinos-aged-10-years-and-over-2024-sending).
+
+## National ICT Household Survey
+
+The National ICT Household Survey (or NICTHS, as the cool kids say) is a survey initiative done through the partnership of the Department of Information and Communications Technology (DICT) and the Philippine Statistics Authority (PSA) that aims to ["track household and individual-level indicators that reflect the broad development impact of Information and Communications Technologies (ICTs) in the country."](https://ictstatistics.dict.gov.ph/nicths2024/)
+
+Basically, it was a way for our government to keep tabs on ICT-related developments in the country like the access to and usage of internet and computers. It was done in 2019 and, more recently, in 2024, with preliminary result highlights being released gradually by the agencies involved.
+
+> Note: Estimates used in this articles are stated to be preliminary and may still be changed/revised by the involved agencies in the future.
+
+## Computer Inaatupag
+
+Let's start with Filipinos' access to computers:
+
+> Computer = desktop, laptop or tablet (so phone is not considered)<br/>
+> "Use" = used one or more of the ICT devices listed above in the past 3 months 
+
+<SideCar mobile_view="normal">
+<SideCarSlide Visual={BarChart} height="600px" data={bardata.data} columns={bardata.columns} x_col="Region" y_cols={["Computer users - 2019 (%)","Computer users - 2024 (%)"]} orientation="horizontal">
+
+### Percentage of Individuals Aged 10 Years and Over Who Used Computers: Philippines and by Region, 2019 & 2024
+
+There has been a very slight decline (18.36% in 2019 to 17.94% in 2024) in computer usage in the whole country.
+
+This decline is most noticeable in the CALABARZON region where the percentage of the aforementioned individuals decreased from 29.06% to 21.84%.
+
+Other regions where there are noticeable declines are SOCCSKSARGEN, Davao Region, Zamboanga Peninsula, Eastern Visayas, Bicol Region, and NCR.
+
+There are also regions where computer usage increased. Namely, BARMM, CARAGA, Northern Mindanao, Central and Western Visayas, and CAR.
+
+> It is important to note that the 2024 figures are still preliminary and the observed trends might not exist for the final estimates.
+
+</SideCarSlide>
+
+<SideCarSlide Visual={BarChart} height="600px" data={bardata.data} columns={bardata.columns} x_col="Region" y_cols={["Num of computer users - 2019 (in thousands)","Num of computer users - 2024 (in thousands)"]} orientation="horizontal">
+
+### Number of Individuals Aged 10 Years and Over Who Used Computers: Philippines and by Region, 2019 & 2024 (*in thousands*)
+
+Compared to that, if we check the estimates for the number of individuals aged 10 years and over who used computers, there is actually an increase in the whole country. There is also a slight increase in NCR.
+
+However, there is still a decline in the estimated number of individuals for CALABARZON (decline of ~566 450), and to varying degrees, the rest of the aforementioned region with decreased population percentages.
+
+</SideCarSlide>
+
+</SideCar>
+
+In conclusion, the current reality and trends in computer usage (desktop, laptop or tablet) differed greatly across the country. One of the things not tackled in the datasets were the effect of phones (which is considered in a different category than computers) to the changes of computer  from 2019 to 2024. Hopefully, other datasets that would come out in the future might shed light to this.
+
+## Desktop, Laptop, Tablet, Nirerepair
+
+Usage of computers across its type also presents large variations.
+
+<SideCar mobile_view="normal">
+
+<SideCarSlide Visual={BarChart} height="600px" data={compUse_Luz.data} columns={compUse_Luz.columns} x_col="Region" y_cols={["Desktop (2019)", "Desktop (2024)", "Laptop (2019)", "Laptop (2024)", "Tablet (2019)", "Tablet (2024)"]} orientation="horizontal" alternating={true} colorStart={9}>
+
+### Percentage of Computer Users Aged 10 Years and Over by Type of Computer and Region (Luzon): 2019 & 2024
+
+> Note: A computer user may have used one or more types so the percentages may not add up to 100%. 
+
+Overall, for the Philippines, usage of desktop and tablet (as percent of computer users), declined. Regionally, however, this trend varies. While tablet usage in Bicol and CALABARZON steeply decreased, its usage slightly increased in NCR.
+
+There could be many reasons for this sharp decline in tablet usage for the aforementioned regions. If I would hazard a guess, the recent proliferation of smartphones might be one of those reasons. With the increasing *mobile app*-ification of many online services, there might be lesser need for the bigger screen that a tablet might offer.
+
+If there is one thing consistent in this topic, it is that laptop usage surged. Laptop usage in the country rose from 39% of all computer users to 67%. For NCR and CALABARZON, it increased from 43% to 69%, and 31% to 65%, respectively. For 2024, laptop became the most common type of computer (not including phones) that Filipinos utilized.
+
+This increase in laptop usage might be brought by the increasing need of owned computers for school and work (especially for remote classes and jobs) that started during the pandemic and is still continuing currently. Even though rental desktop PCs might suffice in 2019, students might opt to buy personal laptops that they can bring to school. Furthermore, due to a laptop's much smaller form factor, people might prefer it for home use depending on the amount of living space they have.
+
+</SideCarSlide>
+
+<SideCarSlide Visual={BarChart} height="600px" data={compUse_Vis.data} columns={compUse_Vis.columns} x_col="Region" y_cols={["Desktop (2019)", "Desktop (2024)", "Laptop (2019)", "Laptop (2024)", "Tablet (2019)", "Tablet (2024)"]} orientation="horizontal" alternating={true} colorStart={9}>
+
+### Percentage of Computer Users Aged 10 Years and Over by Type of Computer and Region (Visayas): 2019 & 2024
+
+Similar trends can be observed for Visayas. For Visayas, however, tablet usage consistently decreased for all regions.
+
+Laptop is also the most common type of computer. For Central Visayas, it is 69.8%, while laptop usage is 67.5% for Western Visayas. Lastly, laptop usage is the highest in Eastern Visayas at 75.5%.
+
+</SideCarSlide>
+
+<SideCarSlide Visual={BarChart} height="600px" data={compUse_Min.data} columns={compUse_Min.columns} x_col="Region" y_cols={["Desktop (2019)", "Desktop (2024)", "Laptop (2019)", "Laptop (2024)", "Tablet (2019)", "Tablet (2024)"]} orientation="horizontal" alternating={true} colorStart={9}>
+
+### Percentage of Computer Users Aged 10 Years and Over by Type of Computer and Region (Mindanao): 2019 & 2024
+
+> Note: No estimate was given for tablet usage in BARMM for 2024 due to only having 25 unweighted cases obtained during the survey.
+
+Again, the situation is similar for Mindanao -- varying trends for desktop and tablet, while consistent increase in laptop usage. 
+
+</SideCarSlide>
+
+</SideCar>
+
+## Hidden Figures: The Sequel
+
+The dataset for the gender distribution of computer users was also available in the first link. Anyway, let's dive into it.
+
+<BarChart height="600px" data={compUse_gender.data} columns={compUse_gender.columns} x_col="Region" y_cols={["Male","Female"]} orientation="horizontal" stack={true} showLabel={true}/>
+
+### Percentage Distribution of Computer Users Aged 10 and Over who Used Computers by Sex and Region, Philippines: 2024
+
+There is a slight edge of female computer users compared to male counterparts. The same situation can be said if we look at it regionally, except for CARAGA.
+
+My wild guess for one of the reasons for this statistics would be the rise of online sellers and remote work (e.g. VA), which are women-dominated fields.
+
+<BarChart height="500px" data={compUse_genderDevi.data} columns={compUse_genderDevi.columns} x_col="Device" y_cols={["Male","Female"]} orientation="horizontal" stack={true} showLabel={true}/>
+
+### Percentage Distribution of Computer Users Aged 10 and Over who Used Computers by Sex and Type of Computer, Philippines: 2024
+
+The slight dominance of women over men in computer usage extends to various types of computers. The largest difference is in laptop usage wherein men accounts for 41% of laptop users while women accounts for 59%.
+
+## Mga Kabataan Talaga...
+
+One of the most important aspect of computer usage in the Philippines is its association with youth, especially during its early days. To check if that still applies today, let's check the data.
+
+<BarChart height="400px" data={compUse_age.data} columns={compUse_age.columns} x_col="Age Group" y_cols={["Percentage of Computer Users"]} orientation="vertical" showLabel={true}/>
+
+### Percentage Distribution of Computer Users by Age Group, Philippines: 2024
+
+The youth (15-24 y/o) composed the biggest group of computer users. Considering that a chunk of that age group are school-age, the increasing demand for more computerized project outputs might have an effect in that statistic.
+
+The percentage of computer users from each of the older age groups, generally, decrease with age. This can be partly due to the total population share of each age group (with younger people representing bigger portions of the population). This can also be partly due to the increasing integration of computers in our lives, especially for the younger generations.
+
+<BarChart height="500px" data={compUse_ageDevi.data} columns={compUse_ageDevi.columns} x_col="Device" y_cols={[" 10 - 14", " 15 - 24", " 25 - 34", " 35 - 44", " 45 - 54", " 55 and over"]} orientation="vertical" stack={true} showLabel={true}/>
+
+### Percentage Distribution of Computer Users by Age Group and Type of Computer, Philippines: 2024
+
+The earlier trend can also be observed for the different types of computers.
+
+If there is a variation, it would be that the dominance of the "15 - 24" age group is smallest for tablet usage.
+
+## Educational Background
+
+<BarChart height="400px" data={compUse_grade.data} columns={compUse_grade.columns} x_col="Highest Grade Completed" y_cols={["Percentage of Computer Users"]} orientation="vertical" showLabel={true} longXlabels={true}/>
+
+### Percentage Distribution of Computer Users by Highest Grade Completed, Philippines: 2024
+
+Majority of computer users in the Philippines completed tertiary or post-tertiary education. One of the possible reasons for this is the fact that companies (especially non-BPOs) typically requires a college diploma for office jobs.
+
+<BarChart height="500px" data={compUse_gradeDevi.data} columns={compUse_gradeDevi.columns} x_col="Device" y_cols={["Primary Education or Lower", "Lower Secondary Education", "Upper Secondary or Post-Secondary Non-Tertiary ", "Tertiary or Post-Tertiary Education"]} orientation="vertical" stack={true} showLabel={true}/>
+
+### Percentage Distribution of Computer Users by Highest Grade Completed and Type of Computer, Philippines: 2024
+
+The distribution per type of computer also exhibits the same trends. The share of those that completed tertiary education is highest for laptop usage, and lowest for tablets.
+
+## Computer-related Activities
+
+Regardless if you're using a bulky desktop, a portable laptop or a hand-carry tablet, what's important are the activities you accomplish using these modern tools. As the popular saying goes:
+
+> It's not the size of the computer. It is what you do with it.
+
+Anyway, let's see what Filipinos do when using a computer:
+
+<SideCar mobile_view="normal">
+<SideCarSlide Visual={Table} data={compUse_act1.data} columns={compUse_act1.columns}>
+
+### Percentage of Computer User Aged 10 Years and Over by Computer-Related Activity Performed, Philippines: 2024
+
+Top 1 in the list is the sending of messages with attachments with 83.81% of computer users doing the activity, which is quite expected. Messaging apps or sites are quite popular among Filipinos, with Meta's Messenger even being free to access when using mobile data. I would assume that this popularity also translates to computer users. Furthermore, sending emails is one of the universal tasks in office jobs.
+
+Top 2 is the copying or moving of data, information or content, which is one of the classic uses of computers ever since the "Pa-burn" era.
+
+Top 3 and 4 are the creation of word documents and presentations, respectively. These are the most common computer tasks for students and office workers, alike.
+
+Top 5 to 7 are tasks involving management of devices or accounts. It ranges from managing privacy settings (47.09%) to setting up security measures (46.89%) to finding and installing devices (46.05%).
+
+</SideCarSlide>
+
+<SideCarSlide Visual={Table} data={compUse_act2.data} columns={compUse_act2.columns}>
+
+### Percentage of Computer User Aged 10 Years and Over by Computer-Related Activity Performed, Philippines: 2024
+
+The last 3 tasks are more technical. Around 27.6% of computer users are performing/performed data management and analysis. Around 13.8% used computers for modelling, simulation or rendering purposes. Lastly, 12.5% used computers to perform coding/programming tasks.
+
+</SideCarSlide>
+</SideCar>
+
+## Conclusion
+
+Computer, along with the internet, defined much of the modern society. From a simple means of entertainment, it became an integral aspect of academic, professional and personal lives of many Filipinos. Therefore, initiatives like the NICTHS are not just important, but a necessity.
+
+The data showed that there are variations in computer usage, not just geographically, but also along gender, age and educational background.
+
+That variation further extends to the activities we perform on computers, from simple messaging to computer programming.
+
+Therefore, we, Filipinos, will have different experiences and will ascribe different meanings when we hear our parents say: Kaka-Computer Mo Yan!

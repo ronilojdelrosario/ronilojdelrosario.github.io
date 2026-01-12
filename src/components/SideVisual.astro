@@ -1,0 +1,40 @@
+---
+const {Visual, ...attrs} = Astro.props;
+
+---
+
+<div class="container-block">
+    <div class="side-visual">
+        <Visual withCaption={false} {...attrs}/>
+    </div>
+    <div class="side-content">
+        <slot/>
+    </div>
+</div>
+
+<style>
+    .container-block {
+        display: flex;
+        flex-direction: row;
+        width: 90%;
+    }
+
+    .side-visual {
+        position: sticky;
+        align-self: flex-start;
+        top: 0;
+        flex: 2;
+        background-color: rgb(39,37,47);
+        margin: 1em;
+    }
+
+    .side-content{
+        flex:1;
+    }
+
+    @media screen and (max-width: 768px) {
+        .container-block {
+            display: block;
+        }
+    }
+</style>

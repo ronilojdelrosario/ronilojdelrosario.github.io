@@ -1,0 +1,131 @@
+---
+const {mobile_view="sticky"} = Astro.props;
+const carID = `car-${Math.random().toString(36).substring(2, 11)}`;
+
+const mobile_position = mobile_view==="sticky"?"sticky":"relative";
+const mobile_padding = mobile_view==="sticky"?"50vh":"1em";
+const mobile_opacity = mobile_view==="sticky"?"0":"1";
+---
+<div class="side-car" id={carID}>
+    <slot/>
+</div>
+
+<style define:vars={{mobile_position,mobile_padding,mobile_opacity}}>
+    .side-car {
+        position: relative;
+        display: block;
+        width:95%;
+    }
+
+    .side-car > :global(.side-visual){
+        position: sticky;
+        width: 60%;
+        padding: 2em;
+        top: 2em;
+        height: 95vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        pointer-events: none;
+        opacity: 0;
+        transition: opacity 0s linear;
+        background-color: rgb(39,37,47);
+    }
+
+    .side-car > :global(.side-visual) >:global(*){
+        width: 100%;
+    }
+
+    .side-car > :global(.active) {
+        opacity: 1;
+        pointer-events: auto;
+        transition: opacity 0s linear;
+    }
+
+    .side-car > :global(.side-narrative){
+        position: relative;
+        display: block;
+        left: 62%;
+        bottom: 10em;
+        width: 38%;
+    }
+
+    .side-car > :global(.side-narrative) > :global(p){
+        line-height: 2;
+    }
+
+    @media screen and (max-width: 768px) {
+        .side-car {
+            width: 91%;
+        }
+
+        .side-car > :global(.side-visual){
+            position: var(--mobile_position);
+            opacity: var(--mobile_opacity);
+            width: 100%;
+            height: auto;
+            display: block;
+            top: 0;
+            padding: 1em 0 0;
+            z-index: 5;
+        }
+
+        .side-car > :global(.active) {
+            opacity: 1;
+        }
+
+        .side-car > :global(.side-narrative){
+            left: 0;
+            width: 100%;
+            padding-top: 1em;
+            bottom: 0;
+            line-height:2;
+        }
+        .side-car > :global(.side-narrative) :global(p){
+            line-height: 2;
+        }
+        .side-car > :global(.side-narrative) > :global(h3){
+            line-height: 1.2;
+        }
+
+        .side-car > :global(.side-narrative) ~ :global(.side-narrative){
+            padding-top: var(--mobile_padding);
+        }
+    }
+</style>
+
+<script define:vars={{carID}}>
+    function throttle(func, delay) {
+        let lastCall = 0;
+        return function(...args) {
+            const now = new Date().getTime();
+            if (now - lastCall >= delay) {
+                lastCall = now;
+                func.apply(this, args);
+            }
+        };
+    }
+    const side_car = document.getElementById(carID);
+    const stickyVisuals = side_car.querySelectorAll(".side-visual");
+    var activeIndex = 0;
+    stickyVisuals[activeIndex].classList.toggle('active',true);
+    const onScroll = () => {
+        let counter = 0;
+        console.log(activeIndex);
+        stickyVisuals.forEach((sticky) => {
+        if (sticky) {
+            const elementCSSTop = parseInt(window.getComputedStyle(sticky, null).getPropertyValue('top'));
+            if (sticky.getBoundingClientRect().top <= elementCSSTop){counter+=1;}
+            //sticky.classList.toggle('active', sticky.getBoundingClientRect().top <= elementCSSTop);
+        }
+        });
+        counter = counter==0?0:counter-1;
+        if (counter!=activeIndex){
+            stickyVisuals[activeIndex].classList.toggle('active',false);
+            stickyVisuals[counter].classList.toggle('active',true);
+            activeIndex = counter;
+        } 
+    };
+
+    window.addEventListener('scroll', throttle(onScroll,50));
+</script>

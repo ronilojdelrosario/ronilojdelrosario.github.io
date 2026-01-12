@@ -1,0 +1,19 @@
+---
+const {Visual, enlarge=false, ...attrs} = Astro.props;
+const slideID = `${Math.random().toString(36).substring(2, 11)}`;
+---
+
+<div class="side-visual"  data-slideID=`${{slideID}}`>
+    <Visual withCaption={false} enlarge={enlarge} {...attrs}/>
+</div>
+<div class="side-narrative" data-slideID=`${{slideID}}`>
+    <slot/>
+</div>
+
+<style>
+    .side-visual-wrap{
+        display:flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>

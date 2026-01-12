@@ -1,0 +1,39 @@
+---
+const { data=[], columns=[], barOptions=[]} = Astro.props;
+---
+<table>
+    <thead>
+        <tr>
+            {columns.map((x)=>(<th>{x}</th>))}
+        </tr>
+    </thead>
+    <tbody>
+    {
+        data.map((row)=>(
+            <tr>
+                {row.map((x)=>(<td style={typeof(x)=="number"?`background: linear-gradient(to right, rgba(90, 124, 202,0.8) ${x}%, transparent ${x}%); background-clip: padding-box;`:""} >{x}</td>))}
+            </tr>
+        ))
+    }
+    </tbody>
+</table>
+
+<style>
+    table, th, td {
+        border: 2px solid rgba(255,255,255,0.6);
+    }
+    table{
+        border-collapse: collapse;
+    }
+    td, th {
+        padding: 0.5em 1em;
+        text-align: center;
+    }
+
+    @media screen and (max-width: 768px)  {
+        td, th{
+            padding: 0.25em;
+            font-size: 16px;
+        }
+    }
+</style>

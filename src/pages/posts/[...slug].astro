@@ -1,17 +1,27 @@
 ---
 import { getCollection, render } from 'astro:content';
 import MarkdownPostLayout from '../../layouts/MarkdownPostLayout.astro';
+import MarkdownPostLayoutLeft from '../../layouts/MarkdownPostLayoutLeft.astro';
+import BlogPostImage from '../../components/BlogPostImage.astro';
+import Blockquote from '../../components/Blockquote.astro';
+import ScatterChart from '../../components/ScatterChart.astro';
+import BarChart from '../../components/BarChart.astro';
+import SideVisual from '../../components/SideVisual.astro';
+import SideCarSlide from '../../components/SideCarSlide.astro'
+import SideCar from '../../components/SideCar.astro'
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
   return posts.map(post => ({
     params: { slug: post.id }, props: { post },
   }));
-}
+};
+
+const components = {BlogPostImage:BlogPostImage,ScatterChart,BarChart,SideVisual,SideCarSlide,SideCar,blockquote:Blockquote};
 
 const { post } = Astro.props;
 const { Content } = await render(post);
 ---
 <MarkdownPostLayout frontmatter={post.data}>
-  <Content />
+  <Content components={components}/>
 </MarkdownPostLayout>

@@ -1,17 +1,18 @@
 ---
 import { Image } from 'astro:assets';
 
-const { src, caption="", ...attrs } = Astro.props;
+const { src, caption="", withCaption=true, enlarge=true, ...attrs } = Astro.props;
+
+const imgID = `img-${Math.random().toString(36).substring(2, 11)}`;
 ---
 <div class="container">
-  <Image src={src} {...attrs} class="normal-img"/>
-  {caption!=""?<p>{caption}</p>:null}
+  <Image id={imgID} src={src} data-enlarge={enlarge} {...attrs} class="normal-img"/>
+  {caption!=""&&withCaption?<p>{caption}{withCaption}</p>:null}
 </div>
 
 <style>
   .container {
     display: block;
-    width: 100%;
   }
 
   img {
@@ -30,8 +31,7 @@ const { src, caption="", ...attrs } = Astro.props;
 
   .container:has(>img.expanded-img){
     position: relative;
-    left: calc(-42.5vw + 50%);
-    width: 85vw;
+    width: 85%;
   }
 
   p {
@@ -44,22 +44,21 @@ const { src, caption="", ...attrs } = Astro.props;
   }
 
   @media screen and (max-width: 768px) {
-    img {
-      max-width:100%;
+    .container:has(>img.expanded-img){
+      width: 90%;
     }
   }
 </style>
 
-<script>
-  const images = document.getElementsByTagName("img");
-  for (var i=0; i<images.length; i++){
-    images[i].addEventListener("click",function(e){
+<script define:vars={{imgID}}>
+  const image = document.getElementById(imgID);
+    if (image.dataset.enlarge==='true'){
+    image.addEventListener("click",function(e){
       if (this.className==="normal-img"){
         this.setAttribute("class","expanded-img")
       }
       else{
         this.setAttribute("class","normal-img")
       }
-    })
-  }
+    });}
 </script>

@@ -1,0 +1,54 @@
+---
+import Chart from './Chart.astro';
+
+const {width = "100%", height = "", data, columns, x_col, y_cols, orientation="vertical", tooltip_cols = [], stack=false, alternating=false, colorStart=0, showLabel=false, longXlabels=false} = Astro.props;
+
+const colorList = ["#dd6b66","#759aa0","#e69d87","#8dc1a9","#ea7e53","#eedd78","#73a373","#73b9bc", "#7289ab", "#91ca8c", "#f49f42", "#fc97af", "#87f7cf", "#f7f494", "#72ccff", "#f7c5a0", "#d4a4eb", "#d2f5a6", "#76f2f2", "#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de", "#3ba272", "#fc8452", "#9a60b4", "#ea7ccc"];
+
+const x_cats = [...new Set(data.map((x)=>x[columns.indexOf(x_col)]))];
+
+const dataset = {
+        dimensions: columns,
+        source: data
+    };
+
+const tooltip_fin = tooltip_cols.length>0?tooltip_cols:[x_col,...y_cols];
+
+const series = y_cols.map((x,index)=>{
+    return {
+            name: x,
+            type : 'bar',
+            itemStyle: {color : alternating?colorList[Math.trunc(index/2)+colorStart]:colorList[index+colorStart],
+                ...(alternating && {decal:{symbol:['none','rect'][index%2],symbolSize:1,
+                color:'rgba(255,255,255,0.5)',rotation:Math.PI/6, dashArrayX: [1, 0], dashArrayY: [2, 5],}})
+            },
+            ...(stack && {stack:'Total'}),
+            label:{show:showLabel,position:'inside',fontWeight:'bolder'},
+            encode : {
+                x : orientation==="vertical"?x_col:x,
+                y : orientation==="vertical"?x:x_col,
+                tooltip : tooltip_fin
+            }
+        };
+});
+
+const option = {
+    legend: {orient:'vertical', left:'5%', bottom:0, textStyle:{color:'white'},
+        itemWidth:12,
+        itemHeight:12,
+        itemGap:2,
+        textGap:5},
+    ...(stack && {aria:{show:true}}),
+    visualMap:[],
+    tooltip: {confine:true,indices:null},//tooltip_fin.map((x)=>columns.findIndex((y)=>x==y))},
+    grid: {left:45,right:'1%',top:10, bottom:`${y_cols.length*12+65}px`},
+    dataset: dataset,
+    xAxis : {type:orientation==="vertical"?"category":"value", data:x_cats, nameLocation:'center', nameTextStyle:{color:'white',fontSize:16}, axisLine:{lineStyle:{color:'white'}}, axisLabel: {interval: 0,rotate: longXlabels?30:0,align:longXlabels?'right':'center',color:'white', width: 380/x_cats.length, overflow:'break', verticalAlign:'top'}
+    },
+    yAxis : {type:orientation==="vertical"?"value":"category", nameLocation:'center', nameTextStyle:{color:'white',fontSize:16}, axisLabel:{color:'white'}, axisLine:{lineStyle:{color:'white'},tooltip:{show:true}}
+    },
+    series: series
+};
+---
+
+<Chart width={width} height={height} mobile_aspect_ratio="auto" options={option}>
