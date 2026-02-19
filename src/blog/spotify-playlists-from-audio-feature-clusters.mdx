@@ -1,0 +1,114 @@
+---
+title: 'Creating Playlists Through Clustering Based on Audio Features'
+subtitle: "Using agglomerative clustering on tracks' audio features to create Spotify playlists"
+pubDate: 2026-02-19
+description: "Using agglomerative clustering on tracks' audio features to create Spotify playlists"
+author: "rjdelrosario"
+cover: '../assets/post_banners/spotify_playlist.png'
+coverAlt: 'Spotify playlists'
+draft: false
+---
+import BlogPostImage from '../components/BlogPostImage.astro';
+import artist_list from '../assets/post_img/playlist_artist_list.png';
+import audio_features from '../assets/post_img/playlist_audio_features.png';
+import cleaning from '../assets/post_img/playlist_cleaning.png';
+import cluster_samples from '../assets/post_img/playlist_cluster_samples.png';
+import histogram from '../assets/post_img/playlist_histogram.png';
+import reccobeats_api from '../assets/post_img/playlist_reccobeats_api.png';
+import spotify_playlist from '../assets/post_img/playlist_spotify_playlist.png';
+
+I have a problem. I want to use my Spotify account more. However, I often see myself just skipping songs after songs because the songs do not jive with my current mood. It will just end with me closing the app.
+
+So I tried -- emphasis on the word *tried* -- to create Spotify playlists, with each playlist composed of songs with similar mood.
+
+Now, something about me: I don't really care about lyrics. Cannot even remember the lyrics of a whole song. I even had a favorite "happy" song that I often listen to, which I learned later on is about unrequited love.
+
+Given that, these playlists will only rely on the mood of the song, or more specifically, on some audio features of the songs that are easily obtainable online. No lyrics involved. Just pure vibes.
+
+## <u>Quick overview</u>
+
+This is what I basically did:
+- Listed the OPM (Original Pinoy Music) artists that I like
+- Get their tracks, and their corresponding audio features<sup>1</sup>
+- Get other details (e.g. popularity at the time of analysis)<sup>2</sup>
+- Filter duplicates (i.e. multiple Spotify tracks that corresponds to the same song)
+- Get the top songs per artists based on popularity
+- Do a hierarchical clustering analysis of the top songs based on the audio features
+- Create a corresponding Spotify playlist for each cluster<sup>2</sup>
+
+> 1-Using [Recco Beats API](https://reccobeats.com/docs/apis/reccobeats-api) <br/>
+> 2-Using [Spotify API](https://developer.spotify.com/documentation/web-api)
+
+Now, let's dive a little deeper.
+
+## <u>Preparation of Track Data</u>
+
+The first thing to do is to get the details of the Spotify tracks that I can potentially include to the playlists.
+
+<SideCar mobile_view="normal">
+<SideCarSlide Visual={BlogPostImage} src={artist_list} alt='yaml file of artists'>
+
+I made a list of artists that I tend to listen to, and I would like to continue listening to. I made 2 yaml files containing 40 artists each along with their corresponding Spotify IDs. The number of artists per yaml file is based on the limits of the APIs used.
+
+</SideCarSlide>
+
+<SideCarSlide Visual={BlogPostImage} src={reccobeats_api} alt='ReccoBeats API'>
+
+Sadly, Spotify discontinued several API endpoints, including track analysis, for new API users. The alternative I used is the [Recco Beats API](https://reccobeats.com/docs/apis/reccobeats-api), a music recommendation and database API service. Specifically, I used 3 endpoints. The 1st one is to get the corresponding Recco Beats ID of artists from their Spotify IDs. The 2nd endpoint is to get the tracks from the artists' recco beats ID. The last is to get the audio features from these tracks. There is one caveat tho. Not all Spotify tracks are in the Recco Beats database so some songs, especially the latest tracks, of the chosen artists won't be included.
+
+Although recco beats API also provides a "popularity" metric, I want to get the up-to-date and standardized "popularity" of the songs. For this (and other miscellaneous details like release date), I used the actual Spotify API.
+
+</SideCarSlide>
+
+<SideCarSlide Visual={BlogPostImage} src={cleaning} alt='Sample code for data cleaning'>
+
+From this data, I filtered out the duplicates, remixes, nonplayable tracks, and tracks with low popularity.
+
+</SideCarSlide>
+
+</SideCar>
+
+## <u>Cluster playlists</u>
+
+From this data, it is now time to group the songs and create the playlists.
+
+<SideCar mobile_view="normal">
+<SideCarSlide Visual={BlogPostImage} src={audio_features} alt='Audio features used for clustering'>
+
+The audio features used were extracted from the actual music track itself and does not involve any semantic analysis of the lyrics. It can be musical characteristics estimated from the track (e.g. loudness, tempo, key) or other characteristics predicted using machine learning models (e.g. valence).
+
+</SideCarSlide>
+
+<SideCarSlide Visual={BlogPostImage} src={histogram} alt='Histogram of audio feature values'>
+
+The features were first scaled to more comparable value ranges using Min-max scalers. My choice of scaler was pretty arbitrary, but I just really want to create some playlists at this point so I just chose the usual. Exploring other scalers and introduction of weights can be explored depending on one's preference.
+
+</SideCarSlide>
+
+<SideCarSlide Visual={BlogPostImage} src={cluster_samples} alt='Sample clusters and summary values'>
+
+A hierarchical clustering method (AgglomerativeClustering from scikit-learn) was used to create 20 clusters from 1093 songs. I chose the number of clusters to be 20 so that each playlist will have around 50-ish songs on average.
+
+</SideCarSlide>
+
+<SideCarSlide Visual={BlogPostImage} src={spotify_playlist} alt='Spotify playlist for Cluster 0'>
+
+From each cluster obtained, a corresponding playlist was created. The summary of audio feature values was also added in the description just to have a sense of what the vibe of the songs will be like.
+
+</SideCarSlide>
+
+</SideCar>
+
+## <u>Results</u>
+
+It's fine.
+
+If I would rate my enjoyment of the playlists, I would give it an average of 7/10.
+
+Some of the playlists formed have no discernible theme, but other playlists have clear overall vibes. An example will be the first cluster which I named "Tapos na pero umaasa pa" for having songs that sound like heartbreak with a sprinkle of nostalgic longing.
+
+If I would rate my enjoyment of the process, however, I would say it's a 10/10.
+
+I learned a lot about my taste in music, along with how music affects me.
+
+Overall, it's a fulfilling journey. Will definitely try again.
