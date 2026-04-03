@@ -1,0 +1,133 @@
+---
+title: 'Population disaggregation using building footprint data'
+subtitle: "Using building footprint data to improve population disaggregation"
+pubDate: 2026-04-03
+description: "Using building footprint data to improve population disaggregation"
+author: "rjdelrosario"
+cover: '../assets/post_banners//population.png'
+coverAlt: 'Building footprints with barangay boundaries'
+draft: true
+---
+import rzl_data from '../assets/post_data/disagg_rzl.json'
+import rzl_geojson from '../assets/post_data/disagg_rzl_map.json'
+import ncr_data from '../assets/post_data/disagg_ncr.json'
+import ChoroMap from '../components/ChoroMap.astro';
+import ScatterChart from '../components/ScatterChart.astro';
+import SideCar from '../components/SideCar.astro';
+import SideCarSlide from '../components/SideCarSlide.astro';
+
+One of the most important question in the field of urban geospatial analytics is:
+
+> Where do people live?
+
+Unfortunately, population data for a most of the places are available as census-level aggregated dataset.
+
+To have a better feels for the population distribution, population data are usually disaggregated (aggregated &rarr; NOT aggregated) to smaller geographic units (from city-level population data to residential block level).
+
+Here, I explored the use of building footprints to disaggregate population.
+
+## <u>How?</u>
+
+The smallest geographic unit that has a population data are barangays. To have a measurable metric for performance, the objective would then be:
+
+> Disaggregate population from city-level to barangay-level
+
+Next, we have to have a baseline for the usefulness of building footprints in population disaggregation. Therefore, two methodologies would be performed:
+
+1. (*Baseline*) Population in a **city** is allocated to **barangays** based on their portion of <u>**land area**</u>
+
+2. Population in a **city** is allocated to **barangays** based on their portion of <u>**building footprint area**</u>
+
+Just to have more idea on its performance, the methodology was performed for NCR and Rizal.
+
+## <u>With what data?</u>
+
+Another question that we have to answer is the building footprint data to be used.
+
+First, there is the Google's Open Buildings data. The data only has the building footprint polygon data, a confidence measure of the building delineation, and the code assigned to the features.
+
+Second, there is the OpenStreetMap building footprint data. Most of the data only has the polygon information. However, a small portion of the dataset have semantic information (i.e. type and name of building). Unfortunately, there are some gaps spatially even in Metro Manila.
+
+Another dataset of note is the Microsoft building footprint data. However, the dataset has the disadvantages of both earlier datasets -- lack of semantic information and gaps in some areas.
+
+Given all of these, I chose to use the Google's Open Buildings as my primary building footprint dataset.
+
+I used the 2024 [PSA census data](https://psa.gov.ph/statistics/population-and-housing/stat-tables) for population and the administrative boundaries from [data.humdata.org](https://data.humdata.org/dataset/cod-ab-phl).
+
+## <u>Wait a minute...</u>
+
+The geospatial data used for the administrative boundaries was, unfortunately, outdated, as compared to the 2024 population census data. The changes that were not yet reflected on the administrative boundary data include:
+
+- Some barangays in Makati being transfered to Taguig's jurisdiction
+
+- Barangay 176 (Bagong Silang), Caloocan being divided into six smaller barangays
+For this analysis, the outdated administrative boundaries were used, and the census data were modified accordingly.
+
+## <u>Results...TL;DR</u>
+
+The following errors were calculated for the estimated barangay population for NCR:
+| Method | RMSE | MAE |
+|---|---|---|
+| Land area-based | 16232.5 | 4515.9 |
+| Building footprint-based | 8883.5 | 3503.8 |
+
+The following were for Rizal:
+| Method | RMSE | MAE |
+|---|---|---|
+| Land area-based | 35837.0 | 13720.9 |
+| Building footprint-based | 7760.9 | 3579.0 |
+
+Population estimates for both locations were more accurate when building footprints were used. Bigger improvement was observed for Rizal than for NCR. This can be attributed to NCR being covered mostly by buildings/built-up areas (except for certain areas), while there are substantial forested/grassland/shrubland areas in Rizal.
+
+## <u>Rizal (Urban vs Rural Divide)</u>
+
+To demonstrate the process, I present the results of the two methodologies on population estimates of barangays in Rizal (down below). The "_diff" layers show the difference between the estimates and the actual population. Positive "_diff" means an overestimation, while negative values mean otherwise.
+
+
+<SideCar>
+<SideCarSlide Visual={ChoroMap} height="500px" geojson={rzl_geojson} geojson_col="ADM4_PCODE" valuedf={rzl_data} loc_col="ADM4_PCODE" ycol="Actual" ycols_options={["Building_based","LandArea_based","Building_diff","LandArea_diff"]} ycols_suffix=" Population" hover_cols={["Barangay","Municipality"]}>
+
+Rizal is composed of highly urbanized barangays, rural areas, and everything in between.
+
+For the land-area-based (click "LandArea_diff Population" button in the map above), it is clear that barangays with large non-built-up areas tend to be overestimated. Most notable examples are Calawis (Antipolo), Puray (Rodriguez), and to some extent, San Jose (Poblacion of Antipolo).
+
+Building-footprint-based estimation resulted to better population estimates (click "Building_diff Population"), as can be seen from the lower range of values. There can still be over/underestimation, however. Specifically, barangays with large commercial areas were overestimated (e.g. Mayamot, Antipolo), while barangays in the same municipalities with mostly residential land use were underestimated (e.g. Cupang, Antipolo). Distinguishing residential buildings could be a way forward in terms of improving the methodology.
+
+</SideCarSlide>
+</SideCar>
+
+Now, I just want to put some charts so here are the "Actual vs Estimates" plots for building-based and land-area-based procedures.
+
+<ScatterChart width="100%" height="600px" data={rzl_data.data} columns={rzl_data.columns} x_col="Actual" y_col="LandArea_based" tooltip_cols={["Municipality","Barangay","Actual","LandArea_based","Building_based"]} visMapTop="2%"/>
+
+<ScatterChart width="100%" height="600px" data={rzl_data.data} columns={rzl_data.columns} x_col="Actual" y_col="Building_based" tooltip_cols={["Municipality","Barangay","Actual","LandArea_based","Building_based"]} visMapTop="2%"/>
+
+## <u>Metro Manila</u>
+
+Metro Manila (a.k.a. National Capital Region) is composed mostly of built-up areas with pockets of greeneries (e.g. La Mesa Eco Park, golf courses). It also has more high-rise residential buildings that could cause errors on disaggregation estimats. To demonstrate these, plots for NCR was shown below.
+
+<SideCar mobile_view="normal">
+
+<SideCarSlide Visual={ScatterChart} width="100%" height="600px" data={ncr_data.data} columns={ncr_data.columns} x_col="Actual" y_col="LandArea_based" tooltip_cols={["City","Barangay","Actual","LandArea_based","Building_based"]} visMapTop="2%">
+
+Look at the two data point with the highest land-area-based population estimate. Population for both of these barangays are heavily overestimated. Barangay Pasong Putik is consisted of the La Mesa Eco Park with a smaller residential area. Meanwhile, Barangay 171, Caloocan has swaths of forested areas and empty lots.
+
+</SideCarSlide>
+
+<SideCarSlide Visual={ScatterChart} width="100%" height="600px" data={ncr_data.data} columns={ncr_data.columns} x_col="Actual" y_col="Building_based" tooltip_cols={["City","Barangay","Actual","LandArea_based","Building_based"]} visMapTop="2%">
+
+Building-footprint-based population still produces large errors. An example of this is Barangay Post Proper Southside (around 68k actual population but only around 2k estimated population). The barangay's land area is occupied mostly by the Manila American Cemetery and Memorial, with a relatively smaller high-density area, as well as multiple high-rise condominiums.
+
+This example highlights one of the weakness of only depending on building footprint area. High-rise residential buildings have a relatively smaller building footprint area considering the substantial population that they house. One of the potential improvement for the procedure is the special consideration for these high-rise residential buildings.
+
+</SideCarSlide>
+
+</SideCar>
+
+## <u>Conclusion</u>
+
+The building-footprint-based population disaggregation gave better estimates, on average, compared to that based on land area. This is especially so for Rizal, which has more varied land cover/use and has more "*green*" areas. Some weaknesses, however, were found on the procedure.
+
+Some recommendations:
+- Distinguish residential and non-residential buildings
+- Give special consideration to condominiums/high-rise residential buildings
