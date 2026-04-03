@@ -1,0 +1,61 @@
+---
+import Map from './Map.astro';
+const {width = "100%", height = "600px", geojson, geojson_col, valuedf, loc_col, ycol, ycols_options=[], ycols_suffix="",hover_cols=[]} = Astro.props;
+
+const columns = valuedf.columns;
+const values = valuedf.data;
+
+if (ycols_options.length>0 && !ycols_options.includes(ycol)){ycols_options.unshift(ycol)};
+
+var latlist, lonlist, latrange, lonrange;
+
+latlist = geojson.features.map((x)=>{
+    let v = x.geometry.coordinates[0][0].map((y)=>y[1]);
+    return [Math.min(...v),Math.max(...v)]});
+
+lonlist = geojson.features.map((x)=>{
+    let v = x.geometry.coordinates[0][0].map((y)=>y[0]);
+    return [Math.min(...v),Math.max(...v)]});
+
+latrange = [Math.min(...latlist.map((x)=>x[0])),Math.max(...latlist.map((x)=>x[1]))];
+lonrange = [Math.min(...lonlist.map((x)=>x[0])),Math.max(...lonlist.map((x)=>x[1]))];
+
+const hover_indices = hover_cols.map((x)=>columns.indexOf(x));
+
+var data = [{
+    type: 'choroplethmap',
+    geojson: geojson,
+    featureidkey: "properties."+geojson_col,
+    locations: values.map((x)=>x[columns.indexOf(loc_col)]),
+    z: values.map((x)=>x[columns.indexOf(ycol)]),
+    text: values.map((x)=>hover_indices.map((y)=>x[y]).join(", ")),
+    hoverinfo: "text+z",
+    marker:{opacity:0.5},
+    ...(values.map((x)=>x[columns.indexOf(ycol)]).some((y)=>y<0)&&{zmid:0}),
+    colorscale: 'Jet',
+    colorbar:{x:1,xanchor:'right',tickcolor:'rgba(255,255,255,0.5)',tickfont:{color:'rgba(255,255,255,0.7)'},ticklabelposition:'inside',len:0.8, ticksuffix:"   ", thickness:10, ticks:"inside"}
+}];
+
+var updatemenus;
+if (ycols_options.length>0){
+    updatemenus =[{
+        //buttons: ycols_options.map((x)=>{return {args:["z",values.map((v)=>v[columns.indexOf(ycol)])], label:x, method:'restyle'}})
+        buttons:ycols_options.map((x)=>{return {args:[{'z':[values.map((v)=>v[columns.indexOf(x)])],
+            zmid: values.map((v)=>v[columns.indexOf(x)]).some((y)=>y<0)?0:null,
+        }],label:x+ycols_suffix,method:'restyle'};}),
+        direction: 'down',
+        type: 'buttons',
+        showactive:true,
+        x: 0,
+        xanchor: 'left'
+    }]
+};
+
+
+var layout = {
+    map:{center:{lat:(latrange[0]+latrange[1])/2,lon:(lonrange[0]+lonrange[1])/2},zoom:0.2+Math.log2(180/(lonrange[1]-lonrange[0])), layers:[{sourcetype:'raster',source:["https://services.arcgisonline.com/arcgis/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"],below:"traces"}]},
+    ...(ycols_options.length>0&&{updatemenus:updatemenus})
+}
+
+---
+<Map width={width} height={height} data={data} layoutMap={layout}/>

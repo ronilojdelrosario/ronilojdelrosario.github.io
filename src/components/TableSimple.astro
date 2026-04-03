@@ -1,0 +1,26 @@
+---
+const props = Astro.props;
+---
+<table {...props}>
+  <slot />
+</table>
+
+<style>
+    table, :global(th), :global(td) {
+        border: 2px solid rgba(255,255,255,0.6);
+    }
+    table{
+        border-collapse: collapse;
+    }
+    :global(td), :global(th) {
+        padding: 0.5em 1em;
+        text-align: center;
+    }
+
+    @media screen and (max-width: 768px)  {
+        :global(td), :global(th){
+            padding: 0.25em;
+            font-size: 16px;
+        }
+    }
+</style>

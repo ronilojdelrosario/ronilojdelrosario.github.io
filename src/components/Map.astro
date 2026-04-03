@@ -1,0 +1,42 @@
+---
+const { width = "100%", height = "", mobile_aspect_ratio = "1 / 1", data, layoutMap={} } = Astro.props;
+
+const chartId = `map-${Math.random().toString(36).substring(2, 11)}`;
+
+const height_fin = height==""?'auto':height;
+const aspect_ratio = height==""?'1 / 1':'auto';
+const mobile_height = (mobile_aspect_ratio=="auto")&&(height!="")?height:"auto";
+
+---
+
+<div id={chartId}></div>
+
+<script src="https://cdn.plot.ly/plotly-3.4.0.min.js" charset="utf-8"/>
+
+<script define:vars={{ data, chartId, layoutMap }}>
+    if (window.innerWidth<=768){
+      if ("updatemenus" in layoutMap){
+        layoutMap.updatemenus[0].type="dropdown";
+      };
+      layoutMap.map.zoom = layoutMap.map.zoom-1;
+      data[0].colorbar.thickness = 10;
+    };
+    Plotly.newPlot(chartId,data,{...layoutMap,margin:{autoexpand:true,b:0,l:0,r:0,t:0}},{responsive:true,displayModeBar:false});
+</script>
+
+<style define:vars={{width, height_fin, aspect_ratio, mobile_aspect_ratio, mobile_height}}>
+  div {
+    width: var(--width);
+    height: var(--height_fin);
+    aspect-ratio: var(--aspect_ratio);
+    margin-bottom: 2em;
+  }
+  @media screen and (max-width: 768px) {
+    div {
+      height: var(--mobile_height);
+      aspect-ratio: var(--mobile_aspect_ratio);
+      overflow: hidden;
+      margin-bottom: 0;
+    }
+  }
+</style>

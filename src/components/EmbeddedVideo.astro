@@ -1,0 +1,23 @@
+---
+const { src="", height="", width=""} = Astro.props;
+---
+
+<div>
+    <iframe src={src} {...(height!="" && { height: height })} {...(width!="" && { width: width })} frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"/>
+</div>
+
+<style>
+    div {
+        width:100%;
+    }
+    @media screen and (max-width: 768px) {
+        div{
+            width:100%;
+            height: fit-content;
+        }
+        iframe{
+            width:100%;
+            height: fit-content;
+        }
+    }
+</style>

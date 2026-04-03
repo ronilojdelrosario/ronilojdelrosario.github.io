@@ -29,12 +29,11 @@ const mobile_height = (mobile_aspect_ratio=="auto")&&(height!="")?height:"auto";
 
 // Merge provided options with defaults
 const chartOptions = Object.keys(options).length > 0 ? options : defaultOptions;
-const serializedOptions = JSON.stringify(chartOptions);
 ---
 
 <div id={chartId}></div>
 
-<script define:vars={{ chartOptions: serializedOptions, chartId }}>
+<script define:vars={{ options: chartOptions, chartId }}>
   // Load ECharts from CDN
   document.addEventListener("DOMContentLoaded", async () => {
     // Load ECharts core
@@ -45,7 +44,6 @@ const serializedOptions = JSON.stringify(chartOptions);
     const chart = echarts.init(chartContainer);
 
     // Set chart options
-    var options = JSON.parse(chartOptions);
     if (window.innerWidth<=768){
       let indexSize = options["visualMap"].findIndex((element)=>element.type=='continuous');
       if (indexSize != -1){
