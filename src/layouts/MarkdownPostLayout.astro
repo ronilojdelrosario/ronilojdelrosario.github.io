@@ -35,7 +35,7 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
         position: absolute;
         width: 100%;
         color: rgba(255,255,255,0.85);
-		font-family: Montserrat, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+		font-family: var(--font-roboto), Arial, sans-serif;
     }
 
     .banner-container{
@@ -106,6 +106,10 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
     }
 
     .content > :global(ul){
+        line-height: 1.8;
+    }
+
+    .content > :global(ol){
         line-height: 1.8;
     }
 

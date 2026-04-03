@@ -7,8 +7,9 @@ import Blockquote from '../../components/Blockquote.astro';
 import ScatterChart from '../../components/ScatterChart.astro';
 import BarChart from '../../components/BarChart.astro';
 import SideVisual from '../../components/SideVisual.astro';
-import SideCarSlide from '../../components/SideCarSlide.astro'
-import SideCar from '../../components/SideCar.astro'
+import SideCarSlide from '../../components/SideCarSlide.astro';
+import SideCar from '../../components/SideCar.astro';
+import TableSimple from '../../components/TableSimple.astro';
 
 export async function getStaticPaths() {
   const posts = await getCollection('blog');
@@ -17,7 +18,7 @@ export async function getStaticPaths() {
   }));
 };
 
-const components = {BlogPostImage:BlogPostImage,ScatterChart,BarChart,SideVisual,SideCarSlide,SideCar,blockquote:Blockquote};
+const components = {BlogPostImage:BlogPostImage,ScatterChart,BarChart,SideVisual,SideCarSlide,SideCar,blockquote:Blockquote,table:TableSimple};
 
 const { post } = Astro.props;
 const { Content } = await render(post);
