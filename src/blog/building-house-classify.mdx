@@ -1,0 +1,149 @@
+---
+title: 'Bahay o Hindi: Simple building classification model'
+subtitle: "Building classification model to improve population disaggregation"
+pubDate: 2026-04-04
+description: "Building classification model to improve population disaggregation"
+author: "rjdelrosario"
+cover: '../assets/post_banners//population.png'
+coverAlt: 'Building footprints with barangay boundaries'
+draft: false
+---
+
+import ncr_data from '../assets/post_data/disagg_ncr_house.json'
+import sample_bldg from '../assets/post_data/sample_bldg.json'
+import sample_bldg_data from '../assets/post_data/sample_bldg_data.json'
+import NewAlabangVillage from '../assets/post_data/brgymap_NewAlabangVillage.json'
+import Dasmarinas from '../assets/post_data/brgymap_Dasmarinas.json'
+import PostProperNorthside from '../assets/post_data/brgymap_PostProperNorthside.json'
+import ScatterChart from '../components/ScatterChart.astro';
+import SideCar from '../components/SideCar.astro';
+import SideCarSlide from '../components/SideCarSlide.astro';
+import ChoroMap from '../components/ChoroMap.astro';
+
+One of the main ideas behind building-footprint-based population disaggregation is that people live in buildings. Specifically, people live in houses and other residential etablishments.
+
+So I tried to create a simple model to differentiate a house vs other types of buildings.
+
+## <u>The Data</u>
+
+There were two building data used: OpenStreetMap (OSM) buildings and Google Open Buildings.
+
+A small percentage of the OSM buildings data has some semantic information, including the general type of the building. The data, however, has gaps spatially even in the Metro Manila. Google Open Buildings, meanwhile, does not have any semantic information but covers all of Metro Manila.
+
+Therefore, OSM building data (specifically the subset with semantic data) was used to train the model. The model was then used to classify Google Open Buildings data, which was ultimately used for population disaggregation.
+
+Lastly, some of the OSM layers were used for the predictors.
+
+## <u>Variables</u>
+
+For the target variable, the OSM buildings were classified based on the "type" property as such:
+- 1, if "type" is "house"
+- 0, if "type" is any value other than "house"
+
+The following variables are used as predictors:
+- Building's footprint area
+- Type of nearest road (OSM road line layer was used)
+  - Removed features: "footway", "cycleway"
+  - 0: "trunk", "trunk_link", "motorway", "motorway_link"
+  - 1: "primary", "primary_link", "busway"
+  - 2: "secondary", "secondary_link"
+  - 3: "tertiary", "tertiary_link", "service", "unclassified"
+  - 4: Others
+- Distance to nearest road (OSM road line layer was used)
+- No. of buildings within 50 meters (Google Open Buildings was used)
+- No. of buildings within 100 meters (Google Open Buildings was used)
+- No. of POIs within 50 meters (OSM POI points and polygons layers were used)
+- No. of POIs within 100 meters (OSM POI points and polygons layers were used)
+- Population density of containing city
+
+## <u>Training-testing split</u>
+
+The Metro Manila area is divided into a 0.03&deg;-by-0.03&deg; square grid (~300m x 300m). The squares in the grid were divided into "training" and "testing" squares. Buildings in the "training" squares became part of the training dataset, while those in the "testing" squares became the testing dataset.
+
+## <u>Caveats</u>
+
+Caveat 1: There are deviations in the building delineations between OSM buildings and Google Open Buildings. This might cause differences in the footprint area (which was used as a predictor) for corresponding features between the two datasets. It was possible for a "house" in the OSM buildings dataset to have a corresponding feature in the Google Open Buildings being classified as "not house" because of such deviation.
+
+Caveat 2: The OSM building dataset has a "type" value of "residential" which pertains to condominiums/high-rise residential buildings. For this blog post, they were considered as "not house". A potential future improvement is the consideration of "residential"-type buildings as an additional target class.
+
+## <u>Sample data</u>
+
+The map below shows a sample subset of the building data used (with "name" and "type") along with the computed predictors.
+
+**(Feel free to zoom and look around.)**
+
+<ChoroMap height="500px" geojson={sample_bldg} geojson_col="osm_id" valuedf={sample_bldg_data} loc_col="osm_id" ycol="ishouse" ycols_options={[]} hover_cols={['name', 'type', 'area', 'fclass_road', 'dist_road', 'within100m_bldg', 'within100m_poi', 'within50m_bldg', 'within50m_poi', 'ishouse']} opacity={1} colorscale={[[0,"red"],[1,"blue"]]}/>
+
+## <u>Model parameters/results</u>
+
+I used a random forest model with 100 tree estimators. Class weights were assigned based on the inverse of each class's proportion in the training dataset.
+
+### Training dataset:
+| | Predicted<br/>"Not house" | Predicted<br/>"House" |
+|--|--|--|
+| Actual<br/>"Not house" | 23226 | 4 |
+| Actual<br/>"House" | 6 | 82310 |
+
+### Test dataset:
+| | Predicted<br/>"Not house" | Predicted<br/>"House" |
+|--|--|--|
+| Actual<br/>"Not house" | 3607 | 1354 |
+| Actual<br/>"House" | 1173 | 30565 |
+
+### Performance summary:
+| Dataset | Precision | Recall | f1 score | ROC AUC |
+|--|--|--|--|--|
+| Training | 0.9999 | 0.9999 | 0.9999 | 0.9999 |
+| Test | 0.958 | 0.963 | 0.960 | 0.845 |
+
+## <u>Back to the people...</u>
+
+> **Just a quick rundown of the population disaggregation method used:**<br/>
+> The population of a city was distributed to its component barangays, based on each barangay's "house"/building footprint area divided by the city's total "house"/building footprint area
+
+Applying the model to Google Open Buildings data gave the final "houses" dataset. Below is a plot of the actual population vs estimated population using "houses"-based disaggregation, with the data points' color signifying the building-based estimates.
+
+<SideCar mobile_view="normal">
+
+<SideCarSlide Visual={ScatterChart} width="100%" height="600px" data={ncr_data.data} columns={ncr_data.columns} x_col="Actual" y_col="House_based" tooltip_cols={["City","Barangay","Actual","Building_based","House_based"]} colorCatCont="Building_based" visMapTop="2%">
+
+The following is the summary of errors for building-based and "house"-based disaggregation:
+
+| Method | RMSE | MAE |
+|---|---|---|
+| Building footprint-based | 8883.5 | 3503.8 |
+| "House" footprint-based | 7417.4 | 2926.4 |
+
+On average lower errors were obtained when using the "houses". However, upon inspection, there were some barangays that had increased errors in population estimates.
+
+</SideCarSlide>
+
+<SideCarSlide Visual={ChoroMap} height="500px" geojson={NewAlabangVillage} geojson_col="Barangay" valuedf={ncr_data} loc_col="Barangay" ycol="House_based" hover_cols={["City","Barangay","Actual","Building_based","House_based"]} opacity={0.15}>
+
+One example of an overestimation of population is at the New Alabang Village, which has an actual population of 22,850 but a disaggregation estimation of 105,125. 
+
+The barangay is mostly composed of affluent residential areas with houses typically larger than average homes in the Philippines. This resulted to higher population estimate per house because of the larger footprint area.
+
+Similar thing can be observed in Brgy. Dasmariñas in Makati, which mostly contains the gated community of Dasmariñas Village.
+
+<ChoroMap height="500px" geojson={Dasmarinas} geojson_col="Barangay" valuedf={ncr_data} loc_col="Barangay" ycol="House_based" hover_cols={["City","Barangay","Actual","Building_based","House_based"]} opacity={0.15}/>
+
+</SideCarSlide>
+
+<SideCarSlide Visual={ChoroMap} height="500px" geojson={PostProperNorthside} geojson_col="Barangay" valuedf={ncr_data} loc_col="Barangay" ycol="House_based" hover_cols={["City","Barangay","Actual","Building_based","House_based"]} opacity={0.15}>
+
+Another erroneous estimate is at the Post Proper Northside in Makati. The barangay mostly contains high-rise condominiums, which was filtered out by the model, with minimum number of single-unit houses.
+
+</SideCarSlide>
+
+</SideCar>
+
+## <u>Conclusion</u>
+
+The random forest model gave okay results for the test data used. Applying the model to classify "houses" for population disaggregation generally resulted to lower estimate errors. However, some barangays had worse estimates when "houses" were used instead of general buildings.
+
+The following improvements are recommended:
+- Possible use of count-based (number of houses) population disaggregation when dealing with houses, or some footprint-area/count hybrid
+- Special consideration for condomiums/high-rise residential buildings.
+
+> The jupyter notebooks used for this analysis can be viewed in this [repository](https://github.com/ronilojdelrosario/population_disaggregation)
