@@ -16,6 +16,8 @@ import results_bam_kiko from '../assets/post_img/results_bam_kiko.png';
 import results_cam_imee from '../assets/post_img/results_cam_imee.png';
 import results_duter10 from '../assets/post_img/results_duter10.png';
 import results_admin from '../assets/post_img/results_admin.png';
+import provincial from '../assets/post_data/provincial.json';
+import SwarmPlot from '../components/SwarmPlot.astro';
 
 The 2025 Senation election period came and went. Allies became enemies, and enemies became allies. Frontrunners fell behind, while dark horses found victory. As the dust settled, what lies in its wake is a political landscape forever changed.
 
@@ -98,3 +100,11 @@ So what did the results tell us about our country?
 It was clear that Mindanao wants their voice to be heard. The recent divide between President Marcos and the Dutertes might have aggravated the issue, but it's clear that the problem was already brewing for years. The "either you're with us or against us" stance that Mindanao projected during the last election did not just hit the admin-backed candidates but also the independents.
 
 > The jupyter notebooks used for the quick analysis of the election data can be viewed in this [repository](https://github.com/ronilojdelrosario/election_notebooks).
+
+## <u>Some interactive plots because why not</u>
+
+<SwarmPlot data={provincial.data} columns={provincial.columns} x_col="Name" y_col="Percent of votes" x_vals={["AQUINO, BAM","PANGILINAN, KIKO"]} colorCat="Region" sizeCat="Vote Count" tooltip_cols={["Name", "Province", "Region", "Percent of votes", "Vote Count"]}/>
+
+<SwarmPlot data={provincial.data} columns={provincial.columns} x_col="Name" y_col="Percent of votes" x_vals={["MARCOS, IMEE R.","VILLAR, CAMILLE"]} colorCat="Region" sizeCat="Vote Count" tooltip_cols={["Name", "Province", "Region", "Percent of votes", "Vote Count"]}/>
+
+<SwarmPlot data={provincial.data} columns={provincial.columns} x_col="Name" y_col="Percent of votes" x_vals={["GO, BONG GO","DELA ROSA, BATO"]} colorCat="Region" sizeCat="Vote Count" tooltip_cols={["Name", "Province", "Region", "Percent of votes", "Vote Count"]}/>
