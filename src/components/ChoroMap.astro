@@ -1,6 +1,6 @@
 ---
 import Map from './Map.astro';
-const {width = "100%", height = "600px", geojson, geojson_col, valuedf, loc_col, ycol, ycols_options=[], ycols_suffix="",hover_cols=[]} = Astro.props;
+const {width = "100%", height = "600px", geojson, geojson_col, valuedf, loc_col, ycol, ycols_options=[], ycols_suffix="",hover_cols=[],opacity=0.5,colorscale='Jet', updatemenustype="dropdown"} = Astro.props;
 
 const columns = valuedf.columns;
 const values = valuedf.data;
@@ -28,11 +28,11 @@ var data = [{
     featureidkey: "properties."+geojson_col,
     locations: values.map((x)=>x[columns.indexOf(loc_col)]),
     z: values.map((x)=>x[columns.indexOf(ycol)]),
-    text: values.map((x)=>hover_indices.map((y)=>x[y]).join(", ")),
+    text: values.map((x)=>hover_indices.map((y)=>columns[y]+": "+x[y]).join("<br>")),
     hoverinfo: "text+z",
-    marker:{opacity:0.5},
+    marker:{opacity:opacity},
     ...(values.map((x)=>x[columns.indexOf(ycol)]).some((y)=>y<0)&&{zmid:0}),
-    colorscale: 'Jet',
+    colorscale: colorscale,
     colorbar:{x:1,xanchor:'right',tickcolor:'rgba(255,255,255,0.5)',tickfont:{color:'rgba(255,255,255,0.7)'},ticklabelposition:'inside',len:0.8, ticksuffix:"   ", thickness:10, ticks:"inside"}
 }];
 
@@ -44,7 +44,7 @@ if (ycols_options.length>0){
             zmid: values.map((v)=>v[columns.indexOf(x)]).some((y)=>y<0)?0:null,
         }],label:x+ycols_suffix,method:'restyle'};}),
         direction: 'down',
-        type: 'buttons',
+        type: updatemenustype,
         showactive:true,
         x: 0,
         xanchor: 'left'

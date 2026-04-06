@@ -14,14 +14,16 @@ const mobile_height = (mobile_aspect_ratio=="auto")&&(height!="")?height:"auto";
 <script src="https://cdn.plot.ly/plotly-3.4.0.min.js" charset="utf-8"/>
 
 <script define:vars={{ data, chartId, layoutMap }}>
-    if (window.innerWidth<=768){
-      if ("updatemenus" in layoutMap){
-        layoutMap.updatemenus[0].type="dropdown";
+  document.addEventListener("DOMContentLoaded", async () => {
+      if (window.innerWidth<=768){
+        if ("updatemenus" in layoutMap){
+          layoutMap.updatemenus[0].type="dropdown";
+        };
+        layoutMap.map.zoom = layoutMap.map.zoom-1;
+        data[0].colorbar.thickness = 10;
       };
-      layoutMap.map.zoom = layoutMap.map.zoom-1;
-      data[0].colorbar.thickness = 10;
-    };
-    Plotly.newPlot(chartId,data,{...layoutMap,margin:{autoexpand:true,b:0,l:0,r:0,t:0}},{responsive:true,displayModeBar:false});
+      Plotly.newPlot(chartId,data,{...layoutMap,margin:{autoexpand:true,b:0,l:0,r:0,t:0}},{responsive:true,displayModeBar:false});
+  });
 </script>
 
 <style define:vars={{width, height_fin, aspect_ratio, mobile_aspect_ratio, mobile_height}}>

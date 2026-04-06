@@ -1,7 +1,7 @@
 ---
 import Chart from './Chart.astro';
 
-const {width = "100%", height = "", data, columns, x_col, y_col, colorCat = "", colorCatList=[], shapeCat = "", shapeCatList=[], sizeCat="", tooltip_cols = [], visMapTop = ""} = Astro.props;
+const {width = "100%", height = "", data, columns, x_col, y_col, colorCat = "", colorCatList=[], colorCatCont="", shapeCat = "", shapeCatList=[], sizeCat="", tooltip_cols = [], visMapTop = ""} = Astro.props;
 
 const dataset = {
         dimensions: columns,
@@ -27,6 +27,28 @@ if (colorCat!= "" && colorCatList.length>0){
         textStyle : {color: "white"}
     };
     visualMap.push(visualMapC);
+}
+
+if (colorCatCont!=""){
+    const indColorCatCont = columns.indexOf(colorCatCont);
+    const colors = data.map((x:any)=>x[indColorCatCont]);
+    var visualMapCC = {
+        type: 'continuous',
+        dimension: colorCatCont,
+        min: Math.min(...colors),
+        max: Math.max(...colors),
+        inRange: {
+            color : ['#E35335','#0096FF']
+        },
+        ...((visMapTop!="")&&{top:visMapTop}),
+        text: [colorCatCont+"\n\n"+Math.max(...colors),Math.min(...colors)],
+        left: "10%",
+        textGap: 5,
+        textStyle : {color: "white"},
+        formatter: '{value}',
+        align: 'auto'
+    };
+    visualMap.push(visualMapCC);
 }
 
 if (shapeCat!= "" && shapeCatList.length>0){

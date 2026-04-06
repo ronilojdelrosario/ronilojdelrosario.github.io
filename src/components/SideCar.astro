@@ -51,7 +51,13 @@ const mobile_opacity = mobile_view==="sticky"?"0":"1";
     }
 
     .side-car > :global(.side-narrative) > :global(p){
-        line-height: 2.5;
+        line-height: 2;
+        margin-top: 8;
+        margin-bottom: 8;
+    }
+
+    .side-car > :global(.side-narrative) > :global(div){
+        margin:0;
     }
 
     @media screen and (max-width: 768px) {
@@ -86,6 +92,7 @@ const mobile_opacity = mobile_view==="sticky"?"0":"1";
         }
         .side-car > :global(.side-narrative) > :global(h3){
             line-height: 1.2;
+            font-size: 1.1em;
         }
 
         .side-car > :global(.side-narrative) ~ :global(.side-narrative){

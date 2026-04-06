@@ -45,15 +45,29 @@ const chartOptions = Object.keys(options).length > 0 ? options : defaultOptions;
 
     // Set chart options
     if (window.innerWidth<=768){
-      let indexSize = options["visualMap"].findIndex((element)=>element.type=='continuous');
-      if (indexSize != -1){
-        let symbolSize = options.visualMap[indexSize].inRange.symbolSize;
-        options.visualMap[indexSize].inRange.symbolSize = [8,symbolSize[1]*8/symbolSize[0]];
+      let index = options["visualMap"].findIndex((element)=>element.type=='continuous');
+      if (index != -1){
+        if ("symbolSize" in options.visualMap[index].inRange){
+          let symbolSize = options.visualMap[index].inRange.symbolSize;
+          options.visualMap[index].inRange.symbolSize = [8,symbolSize[1]*8/symbolSize[0]];
+        }
+        else if("color" in options.visualMap[index].inRange){
+          options.visualMap[index].text = ["",""]
+          options.visualMap[index].left = "20%"
+          options.visualMap[index].itemWidth = 10
+          options.visualMap[index].itemHeight = 60
+        }
       }
-      let indexSizePW = options["visualMap"].findIndex((element)=>element.type=='continuous');
-      // TBC
-      options.yAxis.axisLabel.width = 100;
-      options.yAxis.axisLabel.overflow = 'truncate';
+
+      if (options.series[0].type=='scatter'){
+        options.xAxis.axisLabel.formatter = (x)=>{if(x>1000){return x/1000 +"k"}else{return x}};
+        options.yAxis.axisLabel.formatter = (x)=>{if(x>1000){return x/1000 +"k"}else{return x}};
+        options.yAxis.nameGap = 0;
+      }
+      else {
+        options.yAxis.axisLabel.width = 80;
+        options.yAxis.axisLabel.overflow = 'truncate';
+      }
     }
     if (options.tooltip.indices!=null){
       const tooltipInds = options.tooltip.indices;
