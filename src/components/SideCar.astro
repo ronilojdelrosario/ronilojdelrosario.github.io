@@ -5,6 +5,7 @@ const carID = `car-${Math.random().toString(36).substring(2, 11)}`;
 const mobile_position = mobile_view==="sticky"?"sticky":"relative";
 const mobile_padding = mobile_view==="sticky"?"50vh":"1em";
 const mobile_opacity = mobile_view==="sticky"?"0":"1";
+const mobile_pointer_events = mobile_view==="sticky"?"none":"auto";
 ---
 <div class="side-car" id={carID}>
     <slot/>
@@ -68,6 +69,7 @@ const mobile_opacity = mobile_view==="sticky"?"0":"1";
         .side-car > :global(.side-visual){
             position: var(--mobile_position);
             opacity: var(--mobile_opacity);
+            pointer-events: var(--mobile_pointer_events);
             width: 100%;
             height: auto;
             display: block;
