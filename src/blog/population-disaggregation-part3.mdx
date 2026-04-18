@@ -1,0 +1,77 @@
+---
+title: 'Population disaggregation (Part 3): Count-based Estimation'
+subtitle: "Using weighted building-count-based population disaggregation"
+pubDate: 2026-04-18
+description: "Using weighted building-count-based population disaggregation"
+author: "rjdelrosario"
+cover: '../assets/post_banners//population.png'
+coverAlt: 'Building footprints with barangay boundaries'
+draft: false
+---
+import ScatterChart from '../components/ScatterChart.astro';
+import ncr_data from '../assets/post_data/disagg_ncr_count.json';
+import ncr_errors from '../assets/post_data/disagg_ncr_count_errors.json';
+import PostProperSouthside from '../assets/post_data/brgymap_PostProperSouthside.json';
+import ChoroMap from '../components/ChoroMap.astro';
+
+We're at the end of the road. This is my last experiment on population disaggregation, wherein I will try to use the insights learned in the two previous attempts ([1](/posts/population-disaggregation-part1), [2](/posts/population-disaggregation-part2)).
+
+Just to reiterate the previous recommendations:
+1. Possible use of count-based (number of houses) population disaggregation
+2. Distinguish residential and non-residential buildings
+3. Give special consideration to condominiums/high-rise residential buildings
+
+Let's do this.
+
+## <u>Methodology</u>
+
+The basic idea is to allocate population to each barangay proportional to the fraction of the city's total number of buildings that are located in the barangay (recommendation no. 1).
+
+To further refine the process, the types of buildings were considered. First, I used the model trained in [part 2](/posts/population-disaggregation-part2) to classify features in Google Open Buildings whether they are houses or not (recommendation no. 2). Second, I extracted, or at least tried to extract, the condominiums/high-rise residential buildings from OSM buildings dataset (recommendation no. 3). These processes give us 3 types of building types: "house", "not house", "condo".
+
+Each of these types of buildings were given different weights. I used the following formula to estimate the population of each barangay.
+
+Barangay Population = ( &sum;weight<sub>bldg</sub> )<sub>brgy</sub> / ( &sum;weight<sub>bldg</sub> )<sub>city</sub>
+
+with the following (varying) weights:
+- "house": 1
+- "not house": 0, 0.5 or 1
+- "condo": from 0 to 70 with intervals of 5
+
+Note that the use of 0 weight for "not house" or "condo" means that they were being discarded from the estimation. Meanwhile, the use of 1 as weight for "not house" means that "house" and "not house" are not treated differently. Lastly, having a 0.5 weight for "not house" means that they were still considered for the population estimation, but to a lesser degree than "house"s
+
+## <u>How Did It Turn Out?</u>
+
+<ScatterChart width="100%" height="600px" data={ncr_errors.data} columns={ncr_errors.columns} x_col="Weight (Condo)" y_col="MAE" colorCat="Weight (Not House)" colorCatList={[0,0.5,1]} tooltip_cols={["Weight (Condo)","Weight (Not House)","RMSE","MAE"]} visMapTop="9%" visMapLeft="75%"/>
+
+Even with 0 weight for condos, the count-based method produced less errors than the previous method (area-based method has a mean absolute error of 2926.4).
+
+For zero "condo" weight (aka disregarding condo population), not distiguishing between "house" and "not house" buildings (them having the same weight of 1) produced less errors. This is most likely due to the fact that by doing so, condos will still be counted but to a lesser degree (since they are most likely overlapping with the "not house" buildings). As more weight is attributed to condos, setting zero weight to "not house" (aka disregarding them) started to produce more accurate barangay estimates.
+
+The best barangay population estimates were obtained when the following weights are used:
+- "house": 1
+- "not house": 0
+- "condo": 60
+
+This can be interpreted as condos having 60 times of population as a typical house.
+
+## <u>Final barangay-level estimates</u>
+
+<ScatterChart width="100%" height="600px" data={ncr_data.data} columns={ncr_data.columns} x_col="Actual" y_col="Count-based Estimate" tooltip_cols={["City","Barangay","Actual","Count-based Estimate"]} visMapTop="2%"/>
+
+Population estimates are generally closer using this method as compared to that in [part 2](/posts/population-disaggregation-part2). There were, however, still large deviations from actual population. The primary example is Brgy. Post Proper Southside in Makati, which all the previous methods also underestimated.
+
+<ChoroMap height="500px" geojson={PostProperSouthside} geojson_col="Barangay" valuedf={ncr_data} loc_col="Barangay" ycol="Actual" hover_cols={["City","Barangay","Actual","Count-based Estimate"]} opacity={0.2}/>
+
+Just to compare the summary of errors:
+
+| Method | RMSE | MAE |
+|---|---|---|
+| "House" footprint-based | 7417.4 | 2926.4 |
+| Count-based Estimate | 7417.4 | 2926.4 |
+
+## <u>Potential Applications</u>
+
+The population disaggregation method was used in these experiments to estimate barangay population from city population data. However, this method can be used for other applications, and for other spatial resolutions. Barangay population can be disaggregated to local neighborhoods. The method can also be used to estimate population within a specific distance from certain types of establishments.
+
+> The jupyter notebooks used for this analysis can be viewed in this [repository](https://github.com/ronilojdelrosario/population_disaggregation)
