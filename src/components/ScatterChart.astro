@@ -1,14 +1,14 @@
 ---
 import Chart from './Chart.astro';
 
-const {width = "100%", height = "", data, columns, x_col, y_col, colorCat = "", colorCatList=[], colorCatCont="", shapeCat = "", shapeCatList=[], sizeCat="", tooltip_cols = [], visMapTop = ""} = Astro.props;
+const {width = "100%", height = "", data, columns, x_col, y_col, colorCat = "", colorCatList=[], colorCatCont="", shapeCat = "", shapeCatList=[], sizeCat="", tooltip_cols = [], visMapTop = "", visMapLeft = ""} = Astro.props;
 
 const dataset = {
         dimensions: columns,
         source: data
     };
 // ECharts dark color theme
-const colorList = ["#dd6b66","#759aa0","#e69d87","#8dc1a9","#ea7e53","#eedd78","#73a373","#73b9bc", "#7289ab", "#91ca8c", "#f49f42", "#fc97af", "#87f7cf", "#f7f494", "#72ccff", "#f7c5a0", "#d4a4eb", "#d2f5a6", "#76f2f2", "#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de", "#3ba272", "#fc8452", "#9a60b4", "#ea7ccc"];
+const colorList = ["#dd6b66","#759aa0","#eedd78","#ea7e53","#8dc1a9","#e69d87","#73a373","#73b9bc", "#7289ab", "#91ca8c", "#f49f42", "#fc97af", "#87f7cf", "#f7f494", "#72ccff", "#f7c5a0", "#d4a4eb", "#d2f5a6", "#76f2f2", "#5470c6", "#91cc75", "#fac858", "#ee6666", "#73c0de", "#3ba272", "#fc8452", "#9a60b4", "#ea7ccc"];
 const shapeList = ['circle', 'triangle', 'rect', 'diamond', 'pin', 'roundRect', 'arrow'];
 
 var visualMap = [];
@@ -22,7 +22,7 @@ if (colorCat!= "" && colorCatList.length>0){
             color : colorList.slice(0,colorCatList.length)
         },
         ...((visMapTop!="")&&{top:visMapTop}),
-        left: '10%',
+        left: visMapLeft==""?'10%':visMapLeft,
         textGap: 5,
         textStyle : {color: "white"}
     };
@@ -41,8 +41,8 @@ if (colorCatCont!=""){
             color : ['#E35335','#0096FF']
         },
         ...((visMapTop!="")&&{top:visMapTop}),
+        left: visMapLeft==""?'10%':visMapLeft,
         text: [colorCatCont+"\n\n"+Math.max(...colors),Math.min(...colors)],
-        left: "10%",
         textGap: 5,
         textStyle : {color: "white"},
         formatter: '{value}',
