@@ -1,0 +1,99 @@
+---
+import PageLayout from '../layouts/PageLayout.astro';
+import { Image } from 'astro:assets';
+import { getCollection } from "astro:content";
+const projects = await getCollection('projects');
+---
+
+<PageLayout pageTitle="Project/s">
+    <div id="container">
+        <h1 class="page-title"><u>Personal Project/s</u></h1>
+        {
+            projects.map((proj)=>(
+                <a class="project-container" href={proj.data.project_url}>
+                    <div class="img-container">
+                        <Image class="project-screenshot" src={proj.data.img} alt={proj.data.img}/>
+                    </div>
+                    <div class="info-container">
+                        <h1>{proj.data.title}</h1>
+                        <h3>{proj.data.type}</h3>
+                        <p>{proj.body}</p>
+                    </div>
+                </a>
+            ))
+        }
+
+    </div>
+</PageLayout>
+
+<style>
+    #container {
+        position:relative;
+        top: 1em;
+        width: 90%;
+        margin-inline: auto;
+        padding-bottom: 2em;
+        display:flex;
+        flex-direction: column;
+        justify-content: center;
+        font-family: var(--font-roboto), Arial, sans-serif;
+    }
+
+    .page-title{
+        color: var(--white-text);
+        font-size: 42px;
+        text-align: center;
+        margin: 2px 0;
+    }
+
+    .project-container {
+        position: relative;
+        width: 100%;
+        max-height: 500px;
+        display: flex;
+        flex-direction: row;
+        text-decoration: none;
+        background-color: rgb(32,31,40);
+        margin: 1em 0;
+        padding: 1em;
+        border-radius: 10px;
+        font-family: var(--font-roboto), Arial, sans-serif;
+    }
+    .project-container:hover{
+        background-color: rgba(32,31,40,0.5);
+        box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.4);
+    }
+
+    .img-container {
+        position: relative;
+        flex: 6;
+    }
+    .project-screenshot{
+        max-width:100%;
+        height: auto;
+        border-radius: 10px;
+    }
+    .info-container{
+        position: relative;
+        flex: 4;
+        color: var(--white-text);
+        padding-inline:2em;
+    }
+
+    p {
+        line-height:2;
+    }
+
+    @media screen and (max-width: 768px) {
+        #container {
+            min-width:80vw;
+        }
+        .project-container{
+            flex-direction:column;
+            margin: 0;
+        }
+        .info-container{
+            padding-left: 0;
+        }
+    }
+</style>
