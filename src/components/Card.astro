@@ -1,6 +1,6 @@
 ---
 import { Image } from 'astro:assets';
-const {title,desc,img_src,url} = Astro.props
+const {title,desc,img_src,url,date} = Astro.props
 ---
 
 <div class="card">
@@ -11,6 +11,7 @@ const {title,desc,img_src,url} = Astro.props
             </div>
             <h1><b>{title}</b></h1>
         </a>
+        <p><i>{date}</i></p>
         <p>{desc}</p>
     </div>
 </div>
@@ -19,9 +20,13 @@ const {title,desc,img_src,url} = Astro.props
     .card {
         position: relative;
         width: 35vw;
-        border-radius: 5px;
+        border-radius: 20px;
         background-color: rgb(32,31,40);
-		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+		font-family: var(--font-roboto), Arial, sans-serif;
+    }
+    .card:hover{
+        background-color: rgba(32,31,40,0.5);
+        box-shadow: 0 0 5px 3px rgba(0, 0, 0, 0.4);
     }
     .container {
         padding: 2px 16px;
@@ -36,8 +41,10 @@ const {title,desc,img_src,url} = Astro.props
     }
     p {
         font-size: 16px;
+        line-height: 1.5;
     }
     .img-container{
+        margin-top: 1em;
         max-width: 100%;
         aspect-ratio: 20/10;
         overflow: hidden;
@@ -46,12 +53,12 @@ const {title,desc,img_src,url} = Astro.props
         max-width: 100%;
         width: auto;
         height: auto;
-        margin-top: 1em;
-        border-radius: 5px;
+        border-radius: 3px;
     }
 
     @media screen and (max-width: 768px) {
         .card {
+            width: 100%;
             min-width: 80vw;
             margin: auto;
         }
