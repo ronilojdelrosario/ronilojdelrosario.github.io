@@ -12,5 +12,9 @@ export default defineConfig({
       provider: fontProviders.fontsource(),
       name: "Roboto",
       cssVariable: "--font-roboto",
+  },{
+      provider:  fontProviders.google(),
+      name: "Lexend",
+      cssVariable: "--font-lexend",
   }]}
 });

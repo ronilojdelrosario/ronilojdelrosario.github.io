@@ -12,7 +12,7 @@ const {pageTitle} = Astro.props;
 
 <style define:vars={{background_src:`url(${background_name.src})`}}>
     nav {
-		font-family: Inter, Roboto, 'Helvetica Neue', 'Arial Nova', 'Nimbus Sans', Arial, sans-serif;
+		font-family: var(--font-lexend), Arial, sans-serif;
         background-image: var(--background_src);
         background-size: cover;
         background-position: 0% 34%;
