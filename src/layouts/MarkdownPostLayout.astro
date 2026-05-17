@@ -10,17 +10,20 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
 <meta charset="utf-8" />
 <PageLayout pageTitle="Blog">
     <div class="container">
-        <div class="banner-container">
-            <Image src={frontmatter.cover} alt={frontmatter.coverAlt}/>
-        </div>
         <div class="text-container">
             <div class="post-info">
                 <h1><b>{frontmatter.title}</b></h1>
                 <h2>{frontmatter.subtitle}</h2>
                 <hr>
-                <p>{datestr}</p>
+                <p class="date">{datestr}</p>
                 <hr>
+                <p class="description">{frontmatter.description}</p>
             </div>
+        </div>
+        <div class="banner-container">
+            <Image src={frontmatter.cover} alt={frontmatter.coverAlt}/>
+        </div>
+        <div class="content-container">
             <div class="content">
                 <slot/>
             </div>
@@ -52,7 +55,7 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
         display: block;
         position: relative;
         width: 100%;
-        margin: 0 auto;
+        margin: 2em auto 0;
     }
 
     .post-info, .content > :global(*) {
@@ -66,8 +69,19 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
         padding: 0 0 0.2em;
     }
 
+    hr, .date{
+        padding: 0;
+        margin: 0.5em 0 0;
+    }
+
+    .description {
+        font-size: 18px;
+        margin: 1em 0 0;
+        line-height: 1.5;
+    }
+
     h1, h2, .post-info {
-        text-align: center;
+        text-align: left;
     }
 
     h1{
@@ -81,11 +95,6 @@ const datestr = new Date(frontmatter.pubDate).toLocaleDateString("en-US", option
         font-size: 24px;
         margin: 0.2em 0 1em;
         line-height: 1.2;
-    }
-
-    .post-info p, hr{
-        padding: 0;
-        margin: 0.5em 0 0;
     }
 
     .content {
